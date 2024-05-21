@@ -13,6 +13,7 @@ class Group(Model):
         name (str): Name of the Usergroup
         users (list[User]): List of Users in this group
     """
+
     name: str = fields.CharField(unique=True, max_length=50, pk=True)
     users: fields.ManyToManyRelation[User]
 

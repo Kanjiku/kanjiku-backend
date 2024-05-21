@@ -3,6 +3,7 @@ import datetime
 from tortoise import fields
 from tortoise.models import Model
 
+
 class User(Model):
     """Model Representing a User
 

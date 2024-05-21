@@ -4,14 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-configobj = "*"
 sanic = "*"
-pyusermanager = "*"
 pymysql = "*"
-pyusermanager-api = "*"
-sws-webstuff = "*"
+tortoise-orm = {extras = ["asyncmy"], version = "*"}
 
 [dev-packages]
+black = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"
+python_full_version = "3.11.8"

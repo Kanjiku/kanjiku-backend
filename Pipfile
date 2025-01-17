@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 sanic = "*"
+sanic-ext = "*"
 pymysql = "*"
 tortoise-orm = {extras = ["asyncmy"], version = "*"}
 

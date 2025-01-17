@@ -1,9 +1,9 @@
 from enum import Enum
 
 
-class SettingKeys(Enum):
-    """These are keys which are allowed for dynamic configuration entrys.
-    """
+class SettingKey(Enum):
+    """These are keys which are allowed for dynamic configuration entrys."""
+
     Favicon = "Favicon"
     """Config key for the favicon"""
     Logo = "Logo"

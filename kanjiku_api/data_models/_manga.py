@@ -7,3 +7,4 @@ class Manga(Model):
     name = fields.TextField(unique=True)
     slug = fields.TextField(unique=True)
     description = fields.TextField(null=True)
+    thumbnail = fields.ForeignKeyField("data_models.Image", related_name="relations")

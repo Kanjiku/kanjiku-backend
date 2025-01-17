@@ -48,8 +48,19 @@ class User(Model):
         forward_key="username",
         backward_key="name",
     )
+    avatar = fields.ForeignKeyField(model_name="data_models.Image")
 
-    reset_tokens: fields.ReverseRelation[ResetToken]
-    refresh_tokens: fields.ReverseRelation[RefreshToken]
-    identity_tokens: fields.ReverseRelation[IdentityToken]
-    read_chapters: fields.ReverseRelation[ReadChapter]
+    reset_tokens: fields.ReverseRelation["ResetToken"]
+    refresh_tokens: fields.ReverseRelation["RefreshToken"]
+    identity_tokens: fields.ReverseRelation["IdentityToken"]
+    read_chapters= fields.ManyToManyField(
+        model_name="data_models.Chapter",
+        through="read_chapters",
+        related_name="read_by"
+    )
+    read_chapters= fields.ManyToManyField(
+        model_name="data_models.Announcement",
+        through="read_announcements",
+        related_name="read_by"
+    )
+

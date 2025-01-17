@@ -9,3 +9,4 @@ class Chapter(Model):
     volume = fields.TextField(null=True)
     name = fields.TextField()
     release_date = fields.DatetimeField(default=datetime.now())
+    read_by: fields.ManyToManyRelation["User"]

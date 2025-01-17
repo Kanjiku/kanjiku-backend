@@ -4,6 +4,6 @@ from tortoise.models import Model
 
 class Page(Model):
     id = fields.BigIntField(pk=True)
-    name = fields.TextField(unique=True)
-    slug = fields.TextField(unique=True)
-    description = fields.TextField(null=True)
+    page = fields.IntField()
+    chapter = fields.ForeignKeyField(model_name="Chapter", related_name="pages")
+    pages: fields.ReverseRelation["Page"]

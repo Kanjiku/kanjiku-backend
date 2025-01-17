@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class SettingKey(Enum):
+class SettingKey(StrEnum):
     """These are keys which are allowed for dynamic configuration entrys."""
 
     Favicon = "Favicon"
@@ -12,3 +12,7 @@ class SettingKey(Enum):
     """This role will be the indicator for team members."""
     SupporterRole = "SupporterRole"
     """This role will be the indicator for supporters."""
+    AccessLog:str = "AccessLog"
+    """Should the sanic access Log be enabled?"""
+    Debug:str = "Debug"
+    """Is the Debug mode enabled?"""

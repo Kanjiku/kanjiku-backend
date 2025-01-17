@@ -2,7 +2,6 @@
 
 This is a Backend service using `Sanic` and `tortoise-orm`
 
-
 ## Installation
 
 This project requires `pipenv`.
@@ -18,7 +17,6 @@ python3 -m pip install pipenv
 alias pipenv="python3 -m pipenv"
 ```
 
-
 For the next step we want to clone the repository and change into it's directory
 
 ``` bash
@@ -29,3 +27,22 @@ pipenv install .
 # or if you don't have python 3.13 installed use the following command
 pipenv install . --python python3
 ```
+
+## Running it
+
+Assuming we have cloned the Repository we can run it by issuing the following command
+
+``` bash
+pipenv run python3 -m kanjiku_api
+```
+
+If we instaled it as a service we can also start it using `systemd` by issuing the following command
+``` bash
+sudo systemctl start kanjiku_backend
+```
+
+## Changelog
+
+### 0.0.1
+* Started working on basic routes
+* added data models

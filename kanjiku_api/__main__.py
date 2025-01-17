@@ -5,10 +5,6 @@ from functools import partial
 from kanjiku_api import create_app
 
 
-
-
-
-
 if __name__ == "__main__":
     loader = AppLoader(factory=partial(create_app, "kanjiku_api"))
     app = loader.load()

@@ -1,6 +1,8 @@
 import i18n
 import bcrypt
 
+from datetime import date
+from tortoise.exceptions import ValidationError
 from sanic import Request
 from sanic.response import json as json_resp
 
@@ -16,7 +18,11 @@ async def register(request: Request):
 
     username = request_body.get("username", None)
     password = request_body.get("password", None)
-    email = request_body.get(email, None)
+    email = request_body.get("email", None)
+    birthday = request_body.get("birthday", None)
+
+    if birthday is not None:
+        birthday = date.fromisoformat(birthday)
 
     if username is None or password is None or email is None:
         raise RegistrationFail(
@@ -43,13 +49,18 @@ async def register(request: Request):
         )
 
     salt = bcrypt.gensalt()
-    pw_hash = bcrypt.hashpw(request_body["password"], salt)
-
-    user = await User.create(
-        username=username,
-        password_hash=pw_hash,
-        email=email,
-    )
+    pw_hash = bcrypt.hashpw(password.encode("utf-8"), salt)
+    try:
+        user = await User.create(
+            username=username, password_hash=pw_hash, email=email, birthday=birthday
+        )
+    except ValidationError:
+        raise RegistrationFail(
+            {
+                "msg": i18n.t("errors.validation_error"),
+                "msg_key": "errors.validation_error",
+            }
+        )
 
     return json_resp(
         {

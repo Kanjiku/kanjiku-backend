@@ -2,3 +2,4 @@ hello_world: Hello World!
 username_taken: The username {username} is already taken!
 email_taken: The email {email} is already in use!
 missing_parameters: Missing parameters!
+validation_error: An error was encoutered while validation the values!

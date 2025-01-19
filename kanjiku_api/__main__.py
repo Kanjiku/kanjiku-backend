@@ -1,7 +1,6 @@
 from sanic import Sanic
 from sanic.worker.loader import AppLoader
 from functools import partial
-from tortoise.contrib.sanic import register_tortoise
 
 from kanjiku_api import create_app
 

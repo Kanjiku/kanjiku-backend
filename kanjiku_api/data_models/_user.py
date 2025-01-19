@@ -1,5 +1,8 @@
-import datetime
 import re
+import datetime
+
+from typing import Optional
+
 from tortoise import fields
 from tortoise.models import Model
 from tortoise.validators import MinLengthValidator, RegexValidator
@@ -36,7 +39,7 @@ class User(Model):
             )
         ],
     )
-    birthday: datetime.date = fields.DateField(null=True)
+    birthday: Optional[datetime.date] = fields.DateField(null=True)
     activated: bool = fields.BooleanField(
         description="0: User did not verify his Email\n1: User verified his Email",
         default=False,

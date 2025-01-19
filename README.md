@@ -36,7 +36,7 @@ Assuming we have cloned the Repository we can run it by issuing the following co
 pipenv run python3 -m kanjiku_api
 ```
 
-If we instaled it as a service we can also start it using `systemd` by issuing the following command
+If we installed it as a service we can also start it using `systemd` by issuing the following command
 ``` bash
 sudo systemctl start kanjiku_backend
 ```

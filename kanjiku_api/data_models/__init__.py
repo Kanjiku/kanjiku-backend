@@ -13,6 +13,8 @@ from ._page import Page
 from ._chapter import Chapter
 from ._manga import Manga
 from ._announcement import Announcement
+from ._config import Config
+from ._blog_entry import BlogEntry
 from ._identity_token import IdentityToken
 from ._refresh_token import RefreshToken
 from ._reset_token import ResetToken
@@ -32,6 +34,8 @@ __all__ = [
     "Image",
 ]
 __models__ = [
+    Config,
+    BlogEntry,
     Announcement,
     Page,
     Chapter,

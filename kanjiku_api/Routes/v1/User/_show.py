@@ -21,7 +21,16 @@ async def show_user_by_id(request: Request, user_id: int):
             {
                 "msg": i18n.t("errors.user_does_not_exist").format(id=user_id),
                 "msg_key": "errors.user_does_not_exist",
-            }, status_code=404
+            },
+            status_code=404,
         )
-    
-    return json_resp({"id":user.id})
+
+    repsonse_data = {"id": user.id, "username": user.username}
+
+    if False:
+        birthday = user.birthday
+        if birthday is not None:
+            birthday = birthday.isoformat()
+        repsonse_data["birthday"] = birthday
+
+    return json_resp(repsonse_data)

@@ -24,7 +24,7 @@ git clone https://github.com/Kanjiku/kanjiku-backend.git
 cd kanjiku_backend
 # if you have python 3.13
 pipenv install .
-# or if you don't have python 3.13 installed use the following command
+# or if you don't have python 3.13 installed use the following command to use your currently installed python3
 pipenv install . --python python3
 ```
 

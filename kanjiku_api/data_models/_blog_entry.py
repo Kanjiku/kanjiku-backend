@@ -8,5 +8,6 @@ class BlogEntry(Model):
     created = fields.DatetimeField(auto_now_add=True)
     modified = fields.DatetimeField(auto_now=True)
     text = fields.TextField()
-    image: Optional[fields.ForeignKeyField] = fields.ForeignKeyField("data_models.Image", "relations")
-
+    image: Optional[fields.ForeignKeyField] = fields.ForeignKeyField(
+        "data_models.Image", "blog_relation", null=True
+    )

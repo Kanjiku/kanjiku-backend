@@ -27,7 +27,8 @@ class User(Model):
         description="Email address for the user",
     )
     activated: bool = fields.BooleanField(
-        description="0: User did not verify his Email\n1: User verified his Email"
+        description="0: User did not verify his Email\n1: User verified his Email",
+        default=False
     )
     created_at: datetime.datetime = fields.DatetimeField(
         auto_now_add=True,
@@ -48,19 +49,18 @@ class User(Model):
         forward_key="username",
         backward_key="name",
     )
-    avatar = fields.ForeignKeyField(model_name="data_models.Image")
+    avatar = fields.ForeignKeyField(model_name="data_models.Image", null=True)
 
     reset_tokens: fields.ReverseRelation["ResetToken"]
     refresh_tokens: fields.ReverseRelation["RefreshToken"]
     identity_tokens: fields.ReverseRelation["IdentityToken"]
-    read_chapters= fields.ManyToManyField(
+    read_chapters = fields.ManyToManyField(
         model_name="data_models.Chapter",
         through="read_chapters",
-        related_name="read_by"
+        related_name="read_by",
     )
-    read_chapters= fields.ManyToManyField(
+    read_chapters = fields.ManyToManyField(
         model_name="data_models.Announcement",
         through="read_announcements",
-        related_name="read_by"
+        related_name="read_by",
     )
-

@@ -1,5 +1,5 @@
-from sanic import Blueprint, Request
+from sanic import Blueprint
 
 user_bp = Blueprint("User", "/User")
 
-from . import _show
+from . import _show, _register

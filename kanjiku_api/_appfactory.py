@@ -2,6 +2,9 @@ import i18n
 
 from sanic import Sanic, text
 from sanic_ext import Extend
+
+from tortoise import Tortoise, connections
+from tortoise.log import logger
 from tortoise.contrib.sanic import register_tortoise
 
 from kanjiku_api.Routes.v1 import v1_bp
@@ -24,17 +27,37 @@ def attach_endpoints(app: Sanic):
     app.blueprint(v1_bp)
     app.blueprint(generic_bp)
 
+    @app.listener("after_server_stop")
+    async def close_orm(app, loop):  # pylint: disable=W0612
+        await connections.close_all()
+        logger.info("Tortoise-ORM shutdown")
+
+    async def tortoise_init() -> None:
+        await Tortoise.init(
+            db_url="sqlite://:memory:",
+            modules={"data_models": ["kanjiku_api.data_models"]},
+        )
+        logger.info(
+            "Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps
+        )  # pylint: disable=W0212
+        await Tortoise.generate_schemas()
+
+    @app.listener("before_server_start")
+    async def init_orm(app, loop):  # pylint: disable=W0612
+        await tortoise_init()
+
+    @app.listener("main_process_start")
+    async def init_orm_main(app, loop):  # pylint: disable=W0612
+        await tortoise_init()
+        logger.info("Tortoise-ORM generating schema")
+        await Tortoise.generate_schemas()
+
 
 def create_app(app_name: str) -> Sanic:
 
     app = Sanic(app_name)
     attach_endpoints(app)
-    register_tortoise(
-        app,
-        db_url="sqlite://:memory:",
-        modules={"data_models": ["kanjiku_api.data_models"]},
-        generate_schemas=True,
-    )
     app.config.CORS_ORIGINS = "*"
     Extend(app)
+
     return app

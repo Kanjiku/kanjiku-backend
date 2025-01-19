@@ -6,7 +6,6 @@ from sanic.response import json
 
 from tortoise import Tortoise, connections
 from tortoise.log import logger
-from tortoise.contrib.sanic import register_tortoise
 
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp

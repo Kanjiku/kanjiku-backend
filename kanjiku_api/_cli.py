@@ -42,4 +42,4 @@ kanjiku_api: {__version__}
 """
     )
 
-    return inputvars.config, 
+    return inputvars.config

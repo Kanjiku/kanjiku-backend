@@ -20,41 +20,38 @@ async def register(request: Request):
     password = request_body.get("password", None)
     email = request_body.get("email", None)
     birthday = request_body.get("birthday", None)
-
-    if birthday is not None:
-        birthday = date.fromisoformat(birthday)
-
-    if username is None or password is None or email is None:
-        raise RegistrationFail(
-            {
-                "msg": i18n.t("errors.missing_parameters"),
-                "msg_key": "errors.missing_parameters",
-            }
-        )
-
-    if await User.get_or_none(username=username) is not None:
-        raise RegistrationFail(
-            {
-                "msg": i18n.t("errors.username_taken").format(username=username),
-                "msg_key": "errors.username_taken",
-            }
-        )
-
-    if await User.get_or_none(email=email) is not None:
-        raise RegistrationFail(
-            {
-                "msg": i18n.t("errors.email_taken").format(email=email),
-                "msg_key": "errors.email_taken",
-            }
-        )
-
     salt = bcrypt.gensalt()
     pw_hash = bcrypt.hashpw(password.encode("utf-8"), salt)
+
     try:
+        if birthday is not None:
+            birthday = date.fromisoformat(birthday)
+        if username is None or password is None or email is None:
+            raise RegistrationFail(
+                {
+                    "msg": i18n.t("errors.missing_parameters"),
+                    "msg_key": "errors.missing_parameters",
+                }
+            )
+        if await User.get_or_none(username=username) is not None:
+            raise RegistrationFail(
+                {
+                    "msg": i18n.t("errors.username_taken").format(username=username),
+                    "msg_key": "errors.username_taken",
+                }
+            )
+        if await User.get_or_none(email=email) is not None:
+            raise RegistrationFail(
+                {
+                    "msg": i18n.t("errors.email_taken").format(email=email),
+                    "msg_key": "errors.email_taken",
+                }
+            )
         user = await User.create(
             username=username, password_hash=pw_hash, email=email, birthday=birthday
         )
-    except ValidationError:
+        await user.save()
+    except (ValidationError, ValueError):
         raise RegistrationFail(
             {
                 "msg": i18n.t("errors.validation_error"),

@@ -3,3 +3,4 @@ username_taken: Der Nutzername {username} ist bereits vergeben!
 email_taken: Die Email {email} ist bereits in Benutzung!
 missing_parameters: Nicht alle benötigten Parameter wurden übergeben!
 validation_error: Bei der Validierung der Eingabewerte ist ein Fehler aufgetreten!
+user_does_not_exist: Der Nutzer mit der ID {id} existiert nicht!

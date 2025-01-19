@@ -9,7 +9,7 @@ from tortoise.log import logger
 
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp
-from kanjiku_api.Exceptions import RegistrationFail
+from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -53,7 +53,7 @@ def attach_endpoints(app: Sanic):
         logger.info("Tortoise-ORM generating schema")
         await Tortoise.generate_schemas()
 
-    @app.exception(RegistrationFail)
+    @app.exception(RegistrationFail, UserDoesNotExist)
     async def handle_registration_fail(request:Request, exc:RegistrationFail):
         return json(exc.message, status=exc.status_code)
 

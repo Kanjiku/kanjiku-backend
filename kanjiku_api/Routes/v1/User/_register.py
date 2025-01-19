@@ -23,6 +23,16 @@ async def register(request: Request):
             }
         )
 
+    if await User.get_or_none(email=request_body["email"]) is not None:
+        raise RegistrationFail(
+            {
+                "msg": i18n.t("errors.email_taken").format(
+                    email=request_body["email"]
+                ),
+                "msg_key": "errors.email_taken",
+            }
+        )
+
     user = await User.create(
         username=request_body["username"],
         password_hash=b"deadbeef",

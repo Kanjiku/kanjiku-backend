@@ -1,2 +1,3 @@
 hello_world: Hallo Welt!
 username_taken: Der Nutzername {username} ist bereits vergeben!
+email_taken: Die Email {email} ist bereits in Benutzung!

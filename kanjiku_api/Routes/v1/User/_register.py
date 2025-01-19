@@ -1,4 +1,5 @@
 import i18n
+import bcrypt
 
 from sanic import Request
 from sanic.response import json as json_resp
@@ -13,30 +14,41 @@ async def register(request: Request):
 
     request_body = request.json
 
-    if await User.get_or_none(username=request_body["username"]) is not None:
+    username = request_body.get("username", None)
+    password = request_body.get("password", None)
+    email = request_body.get(email, None)
+
+    if username is None or password is None or email is None:
         raise RegistrationFail(
             {
-                "msg": i18n.t("errors.username_taken").format(
-                    username=request_body["username"]
-                ),
+                "msg": i18n.t("errors.missing_parameters"),
+                "msg_key": "errors.missing_parameters",
+            }
+        )
+
+    if await User.get_or_none(username=username) is not None:
+        raise RegistrationFail(
+            {
+                "msg": i18n.t("errors.username_taken").format(username=username),
                 "msg_key": "errors.username_taken",
             }
         )
 
-    if await User.get_or_none(email=request_body["email"]) is not None:
+    if await User.get_or_none(email=email) is not None:
         raise RegistrationFail(
             {
-                "msg": i18n.t("errors.email_taken").format(
-                    email=request_body["email"]
-                ),
+                "msg": i18n.t("errors.email_taken").format(email=email),
                 "msg_key": "errors.email_taken",
             }
         )
 
+    salt = bcrypt.gensalt()
+    pw_hash = bcrypt.hashpw(request_body["password"], salt)
+
     user = await User.create(
-        username=request_body["username"],
-        password_hash=b"deadbeef",
-        email="test@test.de",
+        username=username,
+        password_hash=pw_hash,
+        email=email,
     )
 
     return json_resp(

@@ -9,6 +9,7 @@ sanic-ext = "*"
 pymysql = "*"
 i18nice = "*"
 tortoise-orm = {extras = ["asyncmy"], version = "*"}
+bcrypt = "*"
 
 [dev-packages]
 black = "*"

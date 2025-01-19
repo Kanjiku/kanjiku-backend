@@ -1,7 +1,8 @@
 import i18n
 
-from sanic import Sanic, text
+from sanic import Sanic, text, Request
 from sanic_ext import Extend
+from sanic.response import json
 
 from tortoise import Tortoise, connections
 from tortoise.log import logger
@@ -9,6 +10,7 @@ from tortoise.contrib.sanic import register_tortoise
 
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp
+from kanjiku_api.Exceptions import RegistrationFail
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -51,6 +53,10 @@ def attach_endpoints(app: Sanic):
         await tortoise_init()
         logger.info("Tortoise-ORM generating schema")
         await Tortoise.generate_schemas()
+
+    @app.exception(RegistrationFail)
+    async def handle_registration_fail(request:Request, exc:RegistrationFail):
+        return json(exc.message, status=exc.status_code)
 
 
 def create_app(app_name: str) -> Sanic:

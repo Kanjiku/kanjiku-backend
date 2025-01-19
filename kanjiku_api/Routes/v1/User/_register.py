@@ -2,9 +2,9 @@ import i18n
 
 from sanic import Request
 from sanic.response import json as json_resp
-from sanic.exceptions import SanicException
 
 from kanjiku_api.data_models import User
+from kanjiku_api.Exceptions import RegistrationFail
 from . import user_bp
 
 
@@ -14,7 +14,7 @@ async def register(request: Request):
     request_body = request.json
 
     if await User.get_or_none(username=request_body["username"]) is not None:
-        raise SanicException(
+        raise RegistrationFail(
             {
                 "msg": i18n.t("errors.username_taken").format(
                     username=request_body["username"]

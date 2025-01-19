@@ -4,3 +4,5 @@ email_taken: Die Email {email} ist bereits in Benutzung!
 missing_parameters: Nicht alle benötigten Parameter wurden übergeben!
 validation_error: Bei der Validierung der Eingabewerte ist ein Fehler aufgetreten!
 user_does_not_exist: Der Nutzer mit der ID {id} existiert nicht!
+username_or_email_not_provided: Du musst deinen Nutzernamen oder deine Email angeben!
+password_not_providied: Du musst dein Passwort angeben!

@@ -25,12 +25,25 @@ async def show_user_by_id(request: Request, user_id: int):
             status_code=404,
         )
 
-    repsonse_data = {"id": user.id, "username": user.username}
+    avatar = await user.avatar
+    if avatar is not None:
+        avatar = avatar.uuid
+
+    groups = await user.groups.all().values_list("name", flat=True)
+
+    repsonse_data = {
+        "id": user.id,
+        "username": user.username,
+        "avatar": avatar,
+        "groups": groups,
+        "member_since": user.created_at.strftime("%d/%m/%Y")
+    }
 
     if False:
         birthday = user.birthday
         if birthday is not None:
             birthday = birthday.isoformat()
         repsonse_data["birthday"] = birthday
+        repsonse_data["email"] = user.email
 
     return json_resp(repsonse_data)

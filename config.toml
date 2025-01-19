@@ -1,0 +1,6 @@
+app_name = "kanjiku_api"
+debug = true
+
+[jwt]
+algorithm = "HS256"
+secret = "supersecretjwtcode"

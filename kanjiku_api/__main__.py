@@ -2,10 +2,11 @@ from sanic import Sanic
 from sanic.worker.loader import AppLoader
 from functools import partial
 
-from kanjiku_api import create_app
+from kanjiku_api import create_app, cli
 
 
 if __name__ == "__main__":
+    config_file = cli()
     loader = AppLoader(factory=partial(create_app, "kanjiku_api"))
     app = loader.load()
     app.prepare(port=9999, dev=True)

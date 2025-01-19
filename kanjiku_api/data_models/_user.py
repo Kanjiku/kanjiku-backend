@@ -73,7 +73,7 @@ class User(Model):
         through="read_chapters",
         related_name="read_by",
     )
-    read_chapters = fields.ManyToManyField(
+    read_announcements = fields.ManyToManyField(
         model_name="data_models.Announcement",
         through="read_announcements",
         related_name="read_by",

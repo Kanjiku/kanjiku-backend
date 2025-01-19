@@ -10,6 +10,7 @@ pymysql = "*"
 i18nice = "*"
 tortoise-orm = {extras = ["asyncmy"], version = "*"}
 bcrypt = "*"
+pyjwt = "*"
 
 [dev-packages]
 black = "*"

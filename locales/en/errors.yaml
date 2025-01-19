@@ -6,3 +6,6 @@ validation_error: An error was encoutered while validation the values!
 user_does_not_exist: The user with id {id} does not exist!
 username_or_email_not_provided: You must provide your username or email!
 password_not_providied: You must provide your password!
+birthday_invalid: Your birthday is not valid!
+username_invalid: Username is not valid!
+email_invalid: Email is not valid!

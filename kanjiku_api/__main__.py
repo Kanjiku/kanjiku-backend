@@ -1,12 +1,18 @@
-from sanic import Sanic
-from sanic.worker.loader import AppLoader
-from functools import partial
+import tomllib
 
-from kanjiku_api import create_app
+from sanic import Sanic
+from pathlib import Path
+from functools import partial
+from sanic.worker.loader import AppLoader
+
+from kanjiku_api import create_app, cli
 
 
 if __name__ == "__main__":
-    loader = AppLoader(factory=partial(create_app, "kanjiku_api"))
+    config_file = cli()
+    cfg = tomllib.loads(Path(config_file).read_text())
+    loader = AppLoader(factory=partial(create_app, cfg))
     app = loader.load()
-    app.prepare(port=9999, dev=True)
+
+    app.prepare(port=9999, dev=cfg.get("debug", False))
     Sanic.serve(primary=app, app_loader=loader)

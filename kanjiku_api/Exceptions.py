@@ -6,3 +6,6 @@ class RegistrationFail(SanicException):
 
 class UserDoesNotExist(SanicException):
     pass
+
+class LoginError(SanicException):
+    pass

@@ -20,18 +20,7 @@ i18n.set("use_locale_dirs", True)
 i18n.load_everything()
 
 
-def attach_endpoints(app: Sanic):
-    @app.get("/")
-    async def hello_world(request):
-        return text("Hello, world.")
-
-    app.blueprint(v1_bp)
-    app.blueprint(generic_bp)
-
-    @app.listener("after_server_stop")
-    async def close_orm(app, loop):  # pylint: disable=W0612
-        await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+def attach_tortoise(app: Sanic):
 
     async def tortoise_init() -> None:
         await Tortoise.init(
@@ -43,6 +32,11 @@ def attach_endpoints(app: Sanic):
         )  # pylint: disable=W0212
         await Tortoise.generate_schemas()
 
+    @app.listener("after_server_stop")
+    async def close_orm(app, loop):  # pylint: disable=W0612
+        await connections.close_all()
+        logger.info("Tortoise-ORM shutdown")
+
     @app.listener("before_server_start")
     async def init_orm(app, loop):  # pylint: disable=W0612
         await tortoise_init()
@@ -53,16 +47,26 @@ def attach_endpoints(app: Sanic):
         logger.info("Tortoise-ORM generating schema")
         await Tortoise.generate_schemas()
 
+
+def attach_endpoints(app: Sanic):
+
+    app.blueprint(v1_bp)
+    app.blueprint(generic_bp)
+
     @app.exception(RegistrationFail, UserDoesNotExist, LoginError)
     async def handle_registration_fail(request: Request, exc: RegistrationFail):
         return json(exc.message, status=exc.status_code)
 
+    app.config.CORS_ORIGINS = "*"
 
-def create_app(app_name: str) -> Sanic:
 
+def create_app(config: dict) -> Sanic:
+    app_name = config.get("app_name", "Kanjiku-API")
     app = Sanic(app_name)
     attach_endpoints(app)
-    app.config.CORS_ORIGINS = "*"
+    attach_tortoise(app)
+    app.config.CFG = config
+
     Extend(app)
 
     return app

@@ -14,5 +14,9 @@ if __name__ == "__main__":
     loader = AppLoader(factory=partial(create_app, cfg))
     app = loader.load()
 
-    app.prepare(port=9999, dev=cfg.get("debug", False))
+    app.prepare(
+        host=cfg.get("listening_ip", "localhost"),
+        port=cfg.get("port", 9999),
+        dev=cfg.get("debug", False),
+    )
     Sanic.serve(primary=app, app_loader=loader)

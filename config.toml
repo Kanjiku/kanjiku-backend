@@ -1,5 +1,7 @@
 app_name = "kanjiku_api"
 debug = true
+port = 9999
+listening_ip = "127.0.0.1"
 
 [jwt]
 algorithm = "HS256"

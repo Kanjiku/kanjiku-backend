@@ -13,8 +13,6 @@ from . import session_bp
 
 @session_bp.route("/login", ["POST"])
 async def login(request: Request):
-    cfg = request.app.config.CFG
-    print(cfg)
     request_data = request.json
     username = request_data.get("username", None)
     password = request_data.get("password", None)

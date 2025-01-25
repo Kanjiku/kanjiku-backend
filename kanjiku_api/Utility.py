@@ -22,7 +22,7 @@ class JWTHelper:
         id_token = await IdentityToken.create(user=user, valid_until=valid_until)
 
         groups: list[Group] = await user.groups.all()
-        group_names: list[str] = await groups.values_list("name", flat=True)
+        group_names: list[str] = [group.name for group in groups]
 
         permissions = {
             "admin": False,
@@ -47,7 +47,7 @@ class JWTHelper:
             if group.view_hidden:
                 permissions["view_hidden"] = True
 
-        jwt_header = {"kid": id_token.id, "token": "IdentityToken"}
+        jwt_header = {"kid": str(id_token.id), "token": "IdentityToken"}
 
         jwt_data = {
             "iss": self.issuer,
@@ -55,7 +55,7 @@ class JWTHelper:
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
             "sub": {
-                "uid": user.id,
+                "uid": str(user.id),
                 "user": user.username,
                 "groups": group_names,
                 "permissions": permissions,
@@ -77,7 +77,7 @@ class JWTHelper:
         )
         refresh_token = await RefreshToken.create(valid_until=valid_until, id_token=id_token)
 
-        jwt_header = {"kid": refresh_token.id, "token": "RefreshToken"}
+        jwt_header = {"kid": str(refresh_token.id), "token": "RefreshToken"}
 
         jwt_data = {
             "iss": self.issuer,
@@ -85,7 +85,7 @@ class JWTHelper:
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
             "sub": {
-                "id": id_token.id,
+                "id": str(id_token.id),
             },
         }
 

@@ -18,7 +18,7 @@ class User(Model):
         email (str): Email address of the User.
         activated (bool): User verified his email Address.
     """
-    id:int = fields.BigIntField(pk=True)
+    id:int = fields.UUIDField(pk=True)
     username: str = fields.CharField(
         max_length=30,
         unique=True,

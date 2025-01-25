@@ -9,3 +9,6 @@ password_not_providied: Du musst dein Passwort angeben!
 birthday_invalid: Dein Geburtstag ist nicht gültig!
 username_invalid: Der Nutzername ist ungültig!
 email_invalid: Die Email ist ungültig!
+login_no_user: Login fehlgeschlagen! Kein Nutzer mit der mit '{username}' vorhanden!
+login_not_provided: Login fehlgeschlagen! Du musst deinen Usernamen oder deine Email angeben!
+login_wrong_password: Login fehlgeschlagen! Passwort ungültig!

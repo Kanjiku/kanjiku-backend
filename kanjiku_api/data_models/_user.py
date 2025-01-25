@@ -66,7 +66,6 @@ class User(Model):
     avatar = fields.ForeignKeyField(model_name="data_models.Image", null=True)
 
     reset_tokens: fields.ReverseRelation["ResetToken"]
-    refresh_tokens: fields.ReverseRelation["RefreshToken"]
     identity_tokens: fields.ReverseRelation["IdentityToken"]
     read_chapters = fields.ManyToManyField(
         model_name="data_models.Chapter",

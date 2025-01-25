@@ -3,6 +3,7 @@ debug = true
 port = 9999
 listening_ip = "127.0.0.1"
 
-[jwt]
+[JWT]
+issuer = "kanjiku_backend"
 algorithm = "HS256"
 secret = "supersecretjwtcode"

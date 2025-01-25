@@ -10,6 +10,8 @@ from tortoise.log import logger
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp
 from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist, LoginError
+from kanjiku_api.Utility import JWTHelper
+from kanjiku_api.Enums import SignMethod
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -65,7 +67,9 @@ def create_app(config: dict) -> Sanic:
     app = Sanic(app_name)
     attach_endpoints(app)
     attach_tortoise(app)
-    app.config.CFG = config
+    app.ctx.CFG = config
+    
+    app.ctx.jwt = JWTHelper(**config["JWT"])
 
     Extend(app)
 

@@ -3,6 +3,7 @@ from tortoise.models import Model
 
 
 class RefreshToken(Model):
-    id = fields.BigIntField(pk=True)
+    id = fields.UUIDField(pk=True)
     issued = fields.DatetimeField(auto_now=True)
-    user = fields.ForeignKeyRelation("data_models.User", "refresh_tokens")
+    valid_until = fields.DatetimeField()
+    id_token = fields.ForeignKeyField("data_models.IdentityToken", "refresh_token")

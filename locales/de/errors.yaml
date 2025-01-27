@@ -13,3 +13,4 @@ login_no_user: Login fehlgeschlagen! Kein Nutzer mit der mit '{username}' vorhan
 login_not_provided: Login fehlgeschlagen! Du musst deinen Usernamen oder deine Email angeben!
 login_wrong_password: Login fehlgeschlagen! Passwort ungültig!
 jwt_error: JWT Token ist ungültig!
+session_expired: Sitzung ist abgelaufen.

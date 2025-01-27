@@ -12,3 +12,4 @@ email_invalid: Die Email ist ungültig!
 login_no_user: Login fehlgeschlagen! Kein Nutzer mit der mit '{username}' vorhanden!
 login_not_provided: Login fehlgeschlagen! Du musst deinen Usernamen oder deine Email angeben!
 login_wrong_password: Login fehlgeschlagen! Passwort ungültig!
+jwt_error: JWT Token ist ungültig!

@@ -12,3 +12,4 @@ email_invalid: Email is not valid!
 login_no_user: Error logging in! No user with '{username}' exists!
 login_not_provided: Error login failed! You must provide your username or email!
 login_wrong_password: Error login failes! Password is wrong!
+jwt_error: JWT token is invalid!

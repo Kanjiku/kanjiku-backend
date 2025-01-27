@@ -18,7 +18,8 @@ class User(Model):
         email (str): Email address of the User.
         activated (bool): User verified his email Address.
     """
-    id:int = fields.UUIDField(pk=True)
+
+    id: int = fields.UUIDField(pk=True)
     username: str = fields.CharField(
         max_length=30,
         unique=True,
@@ -26,7 +27,7 @@ class User(Model):
         validators=[MinLengthValidator(5)],
     )
     password_hash: bytes = fields.BinaryField(
-        description="Hash of the password (if local user)", null=True
+        description="Hash of the password", null=True
     )
     email: str = fields.CharField(
         max_length=100,

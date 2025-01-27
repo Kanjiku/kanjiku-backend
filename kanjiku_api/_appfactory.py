@@ -12,6 +12,7 @@ from kanjiku_api.Routes import generic_bp
 from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist, LoginError
 from kanjiku_api.Utility import JWTHelper
 from kanjiku_api.Enums import SignMethod
+from jwt.exceptions import InvalidTokenError
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -59,6 +60,16 @@ def attach_endpoints(app: Sanic):
     async def handle_registration_fail(request: Request, exc: RegistrationFail):
         return json(exc.message, status=exc.status_code)
 
+    @app.exception(InvalidTokenError)
+    async def handle_decode_error(request: Request, exc: InvalidTokenError):
+        return json(
+            {
+                "msg": i18n.t("errors.jwt_error"),
+                "msg_key": "errors.jwt_error",
+            },
+            400,
+        )
+
     app.config.CORS_ORIGINS = "*"
 
 
@@ -68,7 +79,7 @@ def create_app(config: dict) -> Sanic:
     attach_endpoints(app)
     attach_tortoise(app)
     app.ctx.CFG = config
-    
+
     app.ctx.jwt = JWTHelper(**config["JWT"])
 
     Extend(app)

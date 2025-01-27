@@ -1,6 +1,10 @@
 from sanic.exceptions import SanicException
 
 
+class ParameterError(SanicException):
+    pass
+
+
 class RegistrationFail(SanicException):
     pass
 

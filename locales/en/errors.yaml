@@ -14,3 +14,4 @@ login_not_provided: Error login failed! You must provide your username or email!
 login_wrong_password: Error login failes! Password is wrong!
 jwt_error: JWT token is invalid!
 session_expired: Your session is expired.
+parameter_error: The given parameter {parameter} is invalid!

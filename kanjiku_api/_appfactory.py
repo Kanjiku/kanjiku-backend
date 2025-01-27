@@ -9,7 +9,7 @@ from tortoise.log import logger
 
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp
-from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist, LoginError
+from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist, LoginError, ParameterError
 from kanjiku_api.Utility import JWTHelper
 from kanjiku_api.Enums import SignMethod
 from jwt.exceptions import InvalidTokenError
@@ -56,7 +56,7 @@ def attach_endpoints(app: Sanic):
     app.blueprint(v1_bp)
     app.blueprint(generic_bp)
 
-    @app.exception(RegistrationFail, UserDoesNotExist, LoginError)
+    @app.exception(RegistrationFail, UserDoesNotExist, LoginError, ParameterError)
     async def handle_registration_fail(request: Request, exc: RegistrationFail):
         return json(exc.message, status=exc.status_code)
 

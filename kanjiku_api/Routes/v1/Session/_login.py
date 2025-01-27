@@ -5,7 +5,7 @@ from sanic import Request
 from sanic.response import json as json_resp
 from tortoise.exceptions import ValidationError
 
-from kanjiku_api.data_models import User, RefreshToken, IdentityToken
+from kanjiku_api.data_models import User
 from kanjiku_api.Exceptions import LoginError
 from kanjiku_api.Utility import JWTHelper
 from . import session_bp

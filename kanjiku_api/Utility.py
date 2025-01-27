@@ -106,6 +106,17 @@ class JWTHelper:
 
         return token
 
+    async def token_data(self, id_token:str) -> tuple[list[str], dict[str, str]]:
+        jwt_data = jwt.decode(id_token, self.secret, self.signmethod.value)
+
+        permissions = jwt_data.get("permissions", None)
+        groups = jwt_data("groups", None)
+
+        if permissions is None or groups is None:
+            raise InvalidTokenError()
+        
+        return groups, permissions
+
     async def renew_tokens(self, refresh_token: str) -> tuple[ſtr, str]:
         # validate jwt
         jwt_data = jwt.decode(refresh_token, self.secret, self.signmethod.value)

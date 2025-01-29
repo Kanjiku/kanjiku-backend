@@ -1,6 +1,7 @@
 import re
 import datetime
 
+from uuid import UUID
 from typing import Optional
 
 from tortoise import fields
@@ -19,7 +20,7 @@ class User(Model):
         activated (bool): User verified his email Address.
     """
 
-    id: int = fields.UUIDField(pk=True)
+    id: UUID = fields.UUIDField(pk=True)
     username: str = fields.CharField(
         max_length=30,
         unique=True,

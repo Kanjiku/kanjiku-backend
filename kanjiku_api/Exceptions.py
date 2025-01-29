@@ -15,3 +15,7 @@ class UserDoesNotExist(SanicException):
 
 class LoginError(SanicException):
     pass
+
+
+class SessionError(SanicException):
+    pass

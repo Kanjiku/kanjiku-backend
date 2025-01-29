@@ -68,8 +68,28 @@ async def login(request: Request):
             status_code=400,
         )
 
-    jwt_helper:JWTHelper = request.app.ctx.jwt
+    jwt_helper: JWTHelper = request.app.ctx.jwt
     identity, id_token = await jwt_helper.create_id_token(user)
     refresh_token = await jwt_helper.create_refresh_token(identity)
 
-    return json_resp({"id_token": id_token, "refresh_token": refresh_token})
+    resp = json_resp(
+        {
+            "msg": i18n.t("messages.login_success").format(username=username),
+            "msg_key": "messages.login_success",
+        }
+    )
+
+    resp.cookies.add_cookie(
+        "IdentityToken",
+        id_token,
+        httponly=True,
+        max_age=jwt_helper.valid_minutes_id * 60,
+    )
+    resp.cookies.add_cookie(
+        "RefreshToken",
+        refresh_token,
+        httponly=True,
+        max_age=jwt_helper.valid_minutes_refresh * 60,
+    )
+
+    return resp

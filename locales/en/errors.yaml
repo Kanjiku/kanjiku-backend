@@ -15,3 +15,5 @@ login_wrong_password: Error login failes! Password is wrong!
 jwt_error: JWT token is invalid!
 session_expired: Your session is expired.
 parameter_error: The given parameter {parameter} is invalid!
+no_refresh_token_provided: No refresh token was provided!
+no_session: No Session exists!

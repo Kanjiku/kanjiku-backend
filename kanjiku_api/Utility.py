@@ -2,8 +2,9 @@ import jwt
 import datetime
 
 from uuid import UUID
-from jwt.exceptions import InvalidTokenError
 from dataclasses import dataclass
+from jwt.exceptions import InvalidTokenError
+
 from kanjiku_api.Enums import SignMethod
 from kanjiku_api.data_models import IdentityToken, RefreshToken, User, Group
 
@@ -106,16 +107,18 @@ class JWTHelper:
 
         return token
 
-    async def token_data(self, id_token:str) -> tuple[list[str], dict[str, str]]:
+    def token_data(self, id_token: str) -> tuple[dict[str, str], str]:
         jwt_data = jwt.decode(id_token, self.secret, self.signmethod.value)
-
-        permissions = jwt_data.get("permissions", None)
-        groups = jwt_data("groups", None)
-
-        if permissions is None or groups is None:
+        user_data = jwt_data.get("user", None)
+        if user_data is None:
             raise InvalidTokenError()
-        
-        return groups, permissions
+
+        id_token_id = jwt.get_unverified_header(id_token).get("kid", None)
+
+        if id_token_id is None:
+            raise InvalidTokenError()
+
+        return user_data, id_token_id
 
     async def renew_tokens(self, refresh_token: str) -> tuple[ſtr, str]:
         # validate jwt

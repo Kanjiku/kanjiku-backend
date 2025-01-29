@@ -26,7 +26,7 @@ async def logout(request: Request):
         )
 
     jwt_helper: JWTHelper = request.app.ctx.jwt
-    token_data, token_id = jwt_helper.token_data(id_token)
+    _, token_id = jwt_helper.token_data(id_token)
     request_data = None
     try:
         request_data = request.json

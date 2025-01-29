@@ -22,7 +22,7 @@ def cli() -> str:
         type=str,
     )
     parser.add_argument(
-        "--version", "-v", help="start the application in debug mode", action="store_true"
+        "--version", "-v", help="print version and exit", action="store_true"
     )
 
     inputvars = parser.parse_args()

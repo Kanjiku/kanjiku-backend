@@ -50,6 +50,71 @@ If we installed it as a service we can also start it using `systemd` by issuing 
 ``` bash
 sudo systemctl start kanjiku_backend
 ```
+## Roadmap
+This is the overview of the implementation of certain features
+
+* [] User
+  * [x] Registration
+    * [] sending an activation Mail
+  * [] Activation
+  * [] Password Reset
+  * [x] Show Users
+    * [x] Pagination
+  * [x] Show currently logged in User
+  * [x] Show specific User
+  * [] Delete Account
+* [x] Session
+  * [x] Login
+  * [x] Refresh
+  * [x] Logout
+* [] Images
+  * [] Avatar upload
+  * [] Avatar deletion
+  * [] Blog post image upload
+  * [] Blog post image deletion
+  * [] Manga chapter image upload
+  * [] Manga chapter image deletion
+* [] Announcements
+  * [] Get announcements
+  * [] Mark announcement as read (if logged in)
+* [] Blog Posts
+  * [] Get blog posts
+  * [] get specific blog post
+  * [] Mark blog post as read (if logged in)
+* [] Manga
+  * [] get Mangas
+  * [] get specific Manga
+* [] Chapter
+  * [] Get chapters
+  * [] Get specific chapter
+  * [] Mark chapter as read
+  * [] Download
+* [] Manga Page
+  * [] Get Page
+* [] Admin
+  * [] Deleting other Users Avatars
+  * [] Blog Posts
+    * [] Adding a new blog post
+    * [] Edit a blog post
+    * [] Delete a blog post
+  * [] Announcements
+    * [] Add an announcement
+    * [] Delete an announcement
+  * [] Manga
+    * [] Create manga
+    * [] Modify manga
+    * [] Delete manga
+  * [] Chapter
+    * [] Create chapter
+    * [] Modify chapter
+    * [] Delete chapter
+    * [] Upload chapter
+    * [] Set pre release
+  * [] Manga Page
+    * [] Upload single page
+    * [] Replace single page
+    * [] Reorder single page
+
 ## Tokens
 This API uses a OAUTH inspired auth system. Basically it uses 2 kinds of JWT tokens.
 

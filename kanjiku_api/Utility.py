@@ -2,6 +2,7 @@ import jwt
 import datetime
 
 from uuid import UUID
+from typing import Optional
 from dataclasses import dataclass
 from jwt.exceptions import InvalidTokenError
 
@@ -119,6 +120,10 @@ class JWTHelper:
             raise InvalidTokenError()
 
         return user_data, id_token_id
+
+    def token_lifetime(self, token: str) -> Optional[bool]:
+        token_lifetime = jwt.decode(token, verify=False).get("exp", None)
+        return token_lifetime
 
     async def renew_tokens(self, refresh_token: str) -> tuple[ſtr, str]:
         # validate jwt

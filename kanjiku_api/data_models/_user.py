@@ -113,6 +113,7 @@ class User(Model):
         if include_expensive:
             raw_dict["read_chapters"] = await self.read_announcements.all().values_list("id", flat=True)
             raw_dict["read_announcements"] = await self.read_announcements.all().values_list("id", flat=True)
+            raw_dict["groups"] = await self.groups.all().values_list("name",flat=True)
 
         
         return_dict = {}

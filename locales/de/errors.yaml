@@ -6,3 +6,14 @@ validation_error: Bei der Validierung der Eingabewerte ist ein Fehler aufgetrete
 user_does_not_exist: Der Nutzer mit der ID {id} existiert nicht!
 username_or_email_not_provided: Du musst deinen Nutzernamen oder deine Email angeben!
 password_not_providied: Du musst dein Passwort angeben!
+birthday_invalid: Dein Geburtstag ist nicht gültig!
+username_invalid: Der Nutzername ist ungültig!
+email_invalid: Die Email ist ungültig!
+login_no_user: Login fehlgeschlagen! Kein Nutzer mit der mit '{username}' vorhanden!
+login_not_provided: Login fehlgeschlagen! Du musst deinen Usernamen oder deine Email angeben!
+login_wrong_password: Login fehlgeschlagen! Passwort ungültig!
+jwt_error: JWT Token ist ungültig!
+session_expired: Sitzung ist abgelaufen.
+parameter_error: Der angegebene Parameter {parameter} ist ungültig!
+no_refresh_token_provided: Kein Refresh Token vorhanden!
+no_session: Keine Sitzung vorhanden!

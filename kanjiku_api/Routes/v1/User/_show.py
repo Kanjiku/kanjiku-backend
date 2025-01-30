@@ -1,5 +1,6 @@
 import i18n
 
+from uuid import UUID
 from sanic import Request
 from sanic.response import json as json_resp
 
@@ -8,14 +9,9 @@ from kanjiku_api.Exceptions import UserDoesNotExist
 from . import user_bp
 
 
-@user_bp.route("/", ["GET"])
-async def show_user(request: Request):
-    return json_resp({"greeting": i18n.t("errors.hello_world")})
-
-
-@user_bp.route("/<user_id:int>", ["GET"])
-async def show_user_by_id(request: Request, user_id: int):
-    user = await User.get_or_none(id=user_id)
+@user_bp.route("/<user_id:uuid>", ["GET"])
+async def show_user_by_id(request: Request, user_id: UUID):
+    user = await User.get_or_none(uuid=user_id)
     if user is None:
         raise UserDoesNotExist(
             {
@@ -32,11 +28,11 @@ async def show_user_by_id(request: Request, user_id: int):
     groups = await user.groups.all().values_list("name", flat=True)
 
     repsonse_data = {
-        "id": user.id,
+        "uuid": str(user.uuid),
         "username": user.username,
         "avatar": avatar,
         "groups": groups,
-        "member_since": user.created_at.strftime("%d/%m/%Y")
+        "member_since": user.created_at.strftime("%d/%m/%Y"),
     }
 
     if False:

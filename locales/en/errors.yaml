@@ -6,3 +6,14 @@ validation_error: An error was encoutered while validation the values!
 user_does_not_exist: The user with id {id} does not exist!
 username_or_email_not_provided: You must provide your username or email!
 password_not_providied: You must provide your password!
+birthday_invalid: Your birthday is not valid!
+username_invalid: Username is not valid!
+email_invalid: Email is not valid!
+login_no_user: Error logging in! No user with '{username}' exists!
+login_not_provided: Error login failed! You must provide your username or email!
+login_wrong_password: Error login failes! Password is wrong!
+jwt_error: JWT token is invalid!
+session_expired: Your session is expired.
+parameter_error: The given parameter {parameter} is invalid!
+no_refresh_token_provided: No refresh token was provided!
+no_session: No Session exists!

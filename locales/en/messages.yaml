@@ -1,1 +1,4 @@
 user_created: Successfully created user {username}.
+login_success: Successfully logged in as {username}.
+session_refreshed: Session successfully refreshed.
+logout_success: Successfully logged out.

@@ -1,1 +1,4 @@
 user_created: Benutzer {username} erfolgreich erstellt.
+login_success: Erfolgreich als {username} angemeldet.
+session_refreshed: Sitzung erfolgreich erneuert.
+logout_success: Erfolgreich abgemeldet.

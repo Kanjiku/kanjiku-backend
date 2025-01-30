@@ -40,3 +40,10 @@ print("\n##### Session Info")
 resp = session.get("http://localhost:9999/v1/Session")
 
 print(resp.text)
+
+print("\n#### Logout")
+resp = session.post("http://localhost:9999/v1/Session/logout", json={
+    "logout_all":True
+})
+
+print(resp.text)

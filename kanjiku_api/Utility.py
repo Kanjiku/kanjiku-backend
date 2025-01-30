@@ -48,12 +48,14 @@ class JWTHelper:
 
         return permissions, group_names
 
-    async def create_id_token(self, user: User):
-
+    async def _id_token(self, user: User, id_token: Optional[IdentityToken] = None):
         valid_until = datetime.datetime.now() + datetime.timedelta(
             minutes=self.valid_minutes_id
         )
-        id_token = await IdentityToken.create(user=user, valid_until=valid_until)
+
+        if id_token is None:
+
+            id_token = await IdentityToken.create(user=user, valid_until=valid_until)
 
         jwt_header = {"kid": str(id_token.id), "token": "IdentityToken"}
 
@@ -81,13 +83,17 @@ class JWTHelper:
 
         return id_token, token
 
-    async def create_refresh_token(self, id_token: IdentityToken):
+    async def _refresh_token(
+        self, id_token: IdentityToken, refresh_token: Optional[RefreshToken] = None
+    ):
         valid_until = datetime.datetime.now() + datetime.timedelta(
             minutes=self.valid_minutes_refresh
         )
-        refresh_token = await RefreshToken.create(
-            valid_until=valid_until, id_token=id_token
-        )
+        if refresh_token is None:
+
+            refresh_token = await RefreshToken.create(
+                valid_until=valid_until, id_token=id_token
+            )
 
         jwt_header = {"kid": str(refresh_token.id), "token": "RefreshToken"}
 
@@ -122,7 +128,9 @@ class JWTHelper:
         return user_data, id_token_id
 
     def token_lifetime(self, token: str) -> Optional[bool]:
-        token_lifetime = jwt.decode(token, verify=False).get("exp", None)
+        token_lifetime = jwt.decode(
+            token, self.secret, self.signmethod.value, verify=False
+        ).get("exp", None)
         return token_lifetime
 
     async def renew_tokens(self, refresh_token: str) -> tuple[ſtr, str]:
@@ -184,6 +192,8 @@ class JWTHelper:
             headers=jwt_header,
             algorithm=self.signmethod.value,
         )
+
+        _, updated_id_token = await self._id_token(await id_token.user, id_token)
 
         valid_until = datetime.datetime.now() + datetime.timedelta(
             minutes=self.valid_minutes_refresh

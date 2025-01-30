@@ -27,6 +27,16 @@ pipenv install
 # or if you don't have python 3.13 installed use the following command to use your currently installed python3
 pipenv install --python python3
 ```
+## Dev Stuff
+
+if you want to do the example requests via the provided python files you should also install the dev dependencies
+(or install `requests` any other way you find ok).
+
+Here is the command to install the dev dependencies into the pipenv
+
+```bash
+pipenv install -d
+```
 
 ## Running it
 

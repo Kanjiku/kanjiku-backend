@@ -35,12 +35,14 @@ async def refresh(request: Request):
         id_token,
         httponly=True,
         max_age=jwt_helper.valid_minutes_id * 60,
+        secure=not request.app.debug,
     )
     resp.cookies.add_cookie(
         "RefreshToken",
         refresh_token,
         httponly=True,
         max_age=jwt_helper.valid_minutes_refresh * 60,
+        secure=not request.app.debug,
     )
 
     return resp

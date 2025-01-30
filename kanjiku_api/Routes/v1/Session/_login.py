@@ -69,8 +69,8 @@ async def login(request: Request):
         )
 
     jwt_helper: JWTHelper = request.app.ctx.jwt
-    identity, id_token = await jwt_helper.create_id_token(user)
-    refresh_token = await jwt_helper.create_refresh_token(identity)
+    identity, id_token = await jwt_helper._id_token(user)
+    refresh_token = await jwt_helper._refresh_token(identity)
 
     resp = json_resp(
         {
@@ -84,12 +84,14 @@ async def login(request: Request):
         id_token,
         httponly=True,
         max_age=jwt_helper.valid_minutes_id * 60,
+        secure=not request.app.debug,
     )
     resp.cookies.add_cookie(
         "RefreshToken",
         refresh_token,
         httponly=True,
         max_age=jwt_helper.valid_minutes_refresh * 60,
+        secure=not request.app.debug,
     )
 
     return resp

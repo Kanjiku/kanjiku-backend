@@ -20,7 +20,7 @@ class User(Model):
         activated (bool): User verified his email Address.
     """
 
-    id: UUID = fields.UUIDField(pk=True)
+    uuid: UUID = fields.UUIDField(pk=True)
     username: str = fields.CharField(
         max_length=30,
         unique=True,
@@ -85,3 +85,43 @@ class User(Model):
         through="read_announcements",
         related_name="read_by",
     )
+
+    @property
+    def member_since(self):
+        return self.created_at.strftime("%d/%m/%Y")
+
+    async def serialize(self, include_expensive:bool=False, *fields) -> dict:
+        birthday = self.birthday
+        if birthday is not None:
+            birthday = birthday.strftime("%d/%m/%Y")
+
+        avatar = await self.avatar
+        if avatar is not None:
+            return str(avatar.uuid)
+
+        raw_dict = {
+            "id": str(self.uuid),
+            "username": self.username,
+            "email": self.email,
+            "birthday": birthday,
+            "activated": self.activated,
+            "member_since": self.member_since,
+            "created_at": self.created_at.isoformat(),
+            "modified_at": self.modified_at.isoformat(),
+        }
+
+        if include_expensive:
+            raw_dict["read_chapters"] = await self.read_announcements.all().values_list("id", flat=True)
+            raw_dict["read_announcements"] = await self.read_announcements.all().values_list("id", flat=True)
+
+        
+        return_dict = {}
+        raw_dict_keys = raw_dict.keys()
+        if len(fields) == 0:
+            return raw_dict
+        for key in fields:
+            if not key in raw_dict_keys:
+                continue
+            return_dict[key] = raw_dict[key]
+
+        return return_dict

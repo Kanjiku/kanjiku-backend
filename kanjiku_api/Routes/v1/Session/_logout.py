@@ -1,8 +1,7 @@
 import i18n
 
-from uuid import UUID
 from datetime import datetime
-from jwt import InvalidTokenError
+from tortoise import timezone
 from sanic import Request, BadRequest
 from sanic.response import json as json_resp
 
@@ -14,8 +13,8 @@ from . import session_bp
 
 @session_bp.route("/logout", ["POST"])
 async def logout(request: Request):
-    id_token = request.cookies.get("IdentityToken", None)
-    print(id_token)
+    id_token = request.ctx.id_token
+
     if id_token is None:
         raise SessionError(
             {
@@ -37,15 +36,8 @@ async def logout(request: Request):
         # if no json was provided we use an empty dict
         request_data = {}
 
-    # convert token id
-    try:
-        token_id = UUID(token_id)
-    except ValueError:
-        # if the UUID is invalid
-        raise InvalidTokenError()
-
     # check if session is active
-    id_token_obj = await IdentityToken.get_or_none(id=token_id)
+    id_token_obj = await IdentityToken.get_or_none(uuid=token_id)
     if id_token_obj is None:
         raise SessionError(
             {
@@ -55,7 +47,7 @@ async def logout(request: Request):
             status_code=400,
         )
 
-    if id_token_obj.valid_until > datetime.now():
+    if id_token_obj.valid_until < timezone.now():
         raise SessionError(
             {
                 "msg": i18n.t("errors.session_expired"),

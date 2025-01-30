@@ -7,7 +7,7 @@ user_bp = Blueprint("User", "/User")
 
 from kanjiku_api.data_models import User
 from kanjiku_api.Exceptions import ParameterError
-from . import _show, _register
+from . import _show, _register, _me
 
 
 @user_bp.route("/", ["GET"])
@@ -68,12 +68,12 @@ async def show_users(request: Request):
         await User.all()
         .offset((page - 1) * pagesize)
         .limit(pagesize)
-        .values_list("username", "id")
+        .values_list("username", "uuid")
     )
     print(users)
     for user in users:
         username, uid = user
         print(username, str(uid))
-    results = {str(uid): username for username, uid in users}
+    results = {str(uuid): username for username, uuid in users}
 
     return json_resp({"user_count": user_count, "users": results})

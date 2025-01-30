@@ -57,7 +57,7 @@ class JWTHelper:
 
             id_token = await IdentityToken.create(user=user, valid_until=valid_until)
 
-        jwt_header = {"kid": str(id_token.id), "token": "IdentityToken"}
+        jwt_header = {"kid": str(id_token.uuid), "token": "IdentityToken"}
 
         permissions, group_names = await self._token_info(user)
 
@@ -67,7 +67,7 @@ class JWTHelper:
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
             "user": {
-                "uid": str(user.id),
+                "uid": str(user.uuid),
                 "username": user.username,
                 "groups": group_names,
                 "permissions": permissions,
@@ -95,14 +95,14 @@ class JWTHelper:
                 valid_until=valid_until, id_token=id_token
             )
 
-        jwt_header = {"kid": str(refresh_token.id), "token": "RefreshToken"}
+        jwt_header = {"kid": str(refresh_token.uuid), "token": "RefreshToken"}
 
         jwt_data = {
             "iss": self.issuer,
             "iat": datetime.datetime.now().timestamp(),
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
-            "id_token": str(id_token.id),
+            "id_token": str(id_token.uuid),
         }
 
         token = jwt.encode(
@@ -123,6 +123,11 @@ class JWTHelper:
         id_token_id = jwt.get_unverified_header(id_token).get("kid", None)
 
         if id_token_id is None:
+            raise InvalidTokenError()
+        
+        try:
+            id_token_id = UUID(id_token_id)
+        except ValueError:
             raise InvalidTokenError()
 
         return user_data, id_token_id
@@ -177,13 +182,13 @@ class JWTHelper:
         id_token.valid_until = valid_until
         await id_token.save()
 
-        jwt_header = {"kid": str(id_token.id), "token": "IdentityToken"}
+        jwt_header = {"kid": str(id_token.uuid), "token": "IdentityToken"}
         jwt_data = {
             "iss": self.issuer,
             "iat": datetime.datetime.now().timestamp(),
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
-            "id_token": str(id_token.id),
+            "id_token": str(id_token.uuid),
         }
 
         updated_id_token = jwt.encode(
@@ -201,14 +206,14 @@ class JWTHelper:
         refresh_token_obj.valid_until = valid_until
         await refresh_token_obj.save()
 
-        jwt_header = {"kid": str(refresh_token_obj.id), "token": "RefreshToken"}
+        jwt_header = {"kid": str(refresh_token_obj.uuid), "token": "RefreshToken"}
 
         jwt_data = {
             "iss": self.issuer,
             "iat": datetime.datetime.now().timestamp(),
             "nbf": datetime.datetime.now().timestamp(),
             "exp": valid_until.timestamp(),
-            "id_token": str(id_token.id),
+            "id_token": str(id_token.uuid),
         }
 
         updated_refresh_token = jwt.encode(

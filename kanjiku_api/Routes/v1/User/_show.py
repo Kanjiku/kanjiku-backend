@@ -28,7 +28,7 @@ async def show_user_by_id(request: Request, user_id: int):
     groups = await user.groups.all().values_list("name", flat=True)
 
     repsonse_data = {
-        "id": user.id,
+        "uuid": user.uuid,
         "username": user.username,
         "avatar": avatar,
         "groups": groups,

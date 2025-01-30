@@ -1,3 +1,0 @@
-GET http://localhost:9999/v1/User/1 HTTP/1.1
-content-type: application/json
-

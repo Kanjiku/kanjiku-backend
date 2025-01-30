@@ -25,13 +25,19 @@ class User(Model):
         max_length=30,
         unique=True,
         description="Username",
-        validators=[MinLengthValidator(5)],
+        validators=[
+            MinLengthValidator(5),
+            RegexValidator(
+                r"[a-z0-9]+[a-z \._-]+[a-z0-9]",
+                re.I,
+            ),
+        ],
     )
     password_hash: bytes = fields.BinaryField(
         description="Hash of the password", null=True
     )
     email: str = fields.CharField(
-        max_length=100,
+        max_length=320,
         unique=True,
         description="Email address for the user",
         validators=[

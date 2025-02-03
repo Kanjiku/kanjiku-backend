@@ -5,7 +5,7 @@ from sanic import Request
 from sanic.response import json as json_resp
 
 from kanjiku_api.data_models import User
-from kanjiku_api.Exceptions import UserDoesNotExist
+from kanjiku_api.Exceptions import UserDoesNotExist, PermissionError
 from . import user_bp
 
 
@@ -58,3 +58,35 @@ async def show_user_by_id(request: Request, user_id: UUID):
         )
 
     return json_resp(repsonse_data)
+
+
+@user_bp.route("/<user_id:uuid>", ["PATCH"])
+async def update_user_by_id(request: Request, user_id: UUID):
+    user = await User.get_or_none(uuid=user_id)
+    if user is None:
+        raise UserDoesNotExist(
+            {
+                "msg": i18n.t("errors.user_does_not_exist").format(id=user_id),
+                "msg_key": "errors.user_does_not_exist",
+            },
+            status_code=404,
+        )
+
+    if (
+        request.ctx.user_info is None
+        or request.ctx.user_info.get("uid", "") != str(user_id)
+        or not request.ctx.user_info.get("permissions", {}).get("admin", False)
+    ):
+        raise PermissionError(
+            {
+                "msg": i18n.t("errors.permission_error"),
+                "msg_key": "errors.permission_error",
+            }
+        )
+
+    return json_resp(
+        {
+            "msg": i18n.t("messages.update_successfull"),
+            "msg_key": "messages.update_successfull",
+        }
+    )

@@ -17,3 +17,4 @@ session_expired: Your session is expired.
 parameter_error: The given parameter {parameter} is invalid!
 no_refresh_token_provided: No refresh token was provided!
 no_session: No Session exists!
+permission_error: Permission error!

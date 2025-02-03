@@ -155,7 +155,7 @@ class JWTHelper:
         # try to get refresh_token via id
         try:
             refresh_token_obj = await RefreshToken.get_or_none(
-                id=UUID(refresh_token_id)
+                uuid=UUID(refresh_token_id)
             )
         except ValueError:
             # if the UUID is invalid
@@ -166,7 +166,7 @@ class JWTHelper:
 
         # try to get id_token via id
         try:
-            id_token = await IdentityToken.get_or_none(id=UUID(id_token_id))
+            id_token = await IdentityToken.get_or_none(uuid=UUID(id_token_id))
         except ValueError:
             # if the UUID is invalid
             raise InvalidTokenError()

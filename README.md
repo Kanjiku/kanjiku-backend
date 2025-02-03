@@ -63,6 +63,8 @@ This is the overview of the implementation of certain features
   * [x] Show currently logged in User
   * [x] Show specific User
   * [ ] Delete Account
+  * [ ] Edit User
+  * [ ] Change password
 * [ ] Session
   * [x] Login
     * [ ] Oauth Login

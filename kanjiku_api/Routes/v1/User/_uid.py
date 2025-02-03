@@ -35,11 +35,26 @@ async def show_user_by_id(request: Request, user_id: UUID):
         "member_since": user.created_at.strftime("%d/%m/%Y"),
     }
 
-    if False:
-        birthday = user.birthday
-        if birthday is not None:
-            birthday = birthday.isoformat()
-        repsonse_data["birthday"] = birthday
-        repsonse_data["email"] = user.email
+    # if the viewing user is not logged in or
+    # not the requesting user or not an admin
+    # we return the "sparse" response
+    if (
+        request.ctx.user_info is None
+        or request.ctx.user_info.get("uid", "") != str(user_id)
+        or not request.ctx.user_info.get("permissions", {}).get("admin", False)
+    ):
+        return json_resp(repsonse_data)
+
+    birthday = user.birthday
+    if birthday is not None:
+        birthday = birthday.isoformat()
+    repsonse_data["birthday"] = birthday
+    repsonse_data["email"] = user.email
+
+    # if the user is an admin we respond with the session token infos as well
+    if request.ctx.user_info.get("permissions", {}).get("admin", False):
+        repsonse_data["identity_tokens"] = await user.identity_tokens.all().values_list(
+            "uuid", flat=True
+        )
 
     return json_resp(repsonse_data)

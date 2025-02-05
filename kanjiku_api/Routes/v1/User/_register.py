@@ -8,10 +8,12 @@ from sanic.response import json as json_resp
 
 from kanjiku_api.data_models import User
 from kanjiku_api.Exceptions import RegistrationFail
+from kanjiku_api.Decorators import request_contains_valid_json
 from . import user_bp
 
 
 @user_bp.route("/register", ["POST"])
+@request_contains_valid_json
 async def register(request: Request):
 
     request_body = request.json

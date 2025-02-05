@@ -49,7 +49,7 @@ async def me(request: Request):
 
 @user_bp.route("/me", ["PATCH"])
 @request_contains_valid_json
-async def update_user_by_id(request: Request):
+async def update_me(request: Request):
 
     jwt_helper: JWTHelper = request.app.ctx.jwt
 
@@ -109,7 +109,7 @@ async def update_user_by_id(request: Request):
                     "msg_key": "errors.update_wrong_password",
                 },
             )
-        
+
         salt = bcrypt.gensalt()
         pw_hash = bcrypt.hashpw(new_password.encode("utf-8"), salt)
         user.password_hash = pw_hash
@@ -127,4 +127,43 @@ async def update_user_by_id(request: Request):
     resp.delete_cookie("IdentityToken")
     resp.delete_cookie("RefreshToken")
 
+    return resp
+
+
+@user_bp.route("/me", ["DELETE"])
+async def delete_me(request: Request):
+
+    if request.ctx.id_token is None:
+        raise SessionError(
+            {
+                "msg": i18n.t("errors.no_session"),
+                "msg_key": "errors.no_session",
+            },
+            status_code=400,
+        )
+
+    jwt_helper: JWTHelper = request.app.ctx.jwt
+
+    _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
+
+    id_token = await IdentityToken.get_or_none(uuid=id_token_id)
+
+    if id_token is None:
+        raise SessionError(
+            {
+                "msg": i18n.t("errors.no_session"),
+                "msg_key": "errors.no_session",
+            },
+            status_code=400,
+        )
+
+    user: User = await id_token.user
+
+    await user.delete()
+    resp = json_resp(
+        {"msg": i18n.t("messages.user_deleted"), "msg_key": "messages.user_deleted"}
+    )
+    # tell the browser to delete the tokens as well
+    resp.delete_cookie("IdentityToken")
+    resp.delete_cookie("RefreshToken")
     return resp

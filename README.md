@@ -62,7 +62,9 @@ This is the overview of the implementation of certain features
     * [x] Pagination
   * [x] Show currently logged in User
   * [x] Show specific User
-  * [ ] Delete Account
+  * [x] Delete Account
+  * [x] Edit User
+  * [x] Change password
 * [ ] Session
   * [x] Login
     * [ ] Oauth Login

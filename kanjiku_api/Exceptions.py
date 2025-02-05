@@ -19,3 +19,6 @@ class LoginError(SanicException):
 
 class SessionError(SanicException):
     pass
+
+class PermissionError(SanicException):
+    pass

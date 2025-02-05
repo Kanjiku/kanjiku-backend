@@ -7,7 +7,7 @@ user_bp = Blueprint("User", "/User")
 
 from kanjiku_api.data_models import User
 from kanjiku_api.Exceptions import ParameterError
-from . import _show, _register, _me
+from . import _register, _me, _uid
 
 
 @user_bp.route("/", ["GET"])

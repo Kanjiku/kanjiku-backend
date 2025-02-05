@@ -6,12 +6,14 @@ from sanic.response import json as json_resp
 from tortoise.exceptions import ValidationError
 
 from kanjiku_api.data_models import User
-from kanjiku_api.Exceptions import LoginError
 from kanjiku_api.Utility import JWTHelper
+from kanjiku_api.Decorators import request_contains_valid_json
+from kanjiku_api.Exceptions import LoginError
 from . import session_bp
 
 
 @session_bp.route("/login", ["POST"])
+@request_contains_valid_json
 async def login(request: Request):
     request_data = request.json
     username = request_data.get("username", None)

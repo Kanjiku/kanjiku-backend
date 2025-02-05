@@ -3,6 +3,7 @@ from kanjiku_api._cli import cli
 from kanjiku_api._appfactory import create_app
 from kanjiku_api import Enums
 from kanjiku_api import Utility
+from kanjiku_api import Decorators
 from kanjiku_api import data_models
 from kanjiku_api import Exceptions
 

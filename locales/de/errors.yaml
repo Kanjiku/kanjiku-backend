@@ -18,3 +18,6 @@ parameter_error: Der angegebene Parameter {parameter} ist ungültig!
 no_refresh_token_provided: Kein Refresh Token vorhanden!
 no_session: Keine Sitzung vorhanden!
 permission_error: Berechtigungsfehler!
+request_invalid: Die Anfrage ist ungültig!
+no_data_to_update: Keine zu aktualisierenden Daten übergeben!
+update_wrong_password: Aktualissierung fehlgeschlagen -> Passwort falsch!

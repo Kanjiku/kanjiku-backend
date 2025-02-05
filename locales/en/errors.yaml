@@ -18,3 +18,6 @@ parameter_error: The given parameter {parameter} is invalid!
 no_refresh_token_provided: No refresh token was provided!
 no_session: No Session exists!
 permission_error: Permission error!
+request_invalid: The request is invalid!
+no_data_to_update: No data to update provided!
+update_wrong_password: Update failed -> wrong Password!

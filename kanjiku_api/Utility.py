@@ -114,7 +114,7 @@ class JWTHelper:
 
         return token
 
-    def token_data(self, id_token: str) -> tuple[dict[str, str], str]:
+    def token_data(self, id_token: str) -> tuple[dict[str, str], UUID]:
         jwt_data = jwt.decode(id_token, self.secret, self.signmethod.value)
         user_data = jwt_data.get("user", None)
         if user_data is None:

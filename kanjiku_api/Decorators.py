@@ -1,10 +1,11 @@
-import i18n
 import jwt
+import i18n
 
 from uuid import UUID
 from sanic import Request
 from functools import wraps
 from jwt import InvalidTokenError
+from sanic.exceptions import BadRequest
 
 from kanjiku_api.Utility import JWTHelper
 from kanjiku_api.Exceptions import PermissionError
@@ -24,11 +25,11 @@ def permission_required(*permissions: str, check_db: bool = False):
         @wraps(f)
         async def decorated_function(request: Request, *args, **kwargs):
 
-            #get ID token if provided
+            # get ID token if provided
             id_token = request.cookies.get("IdentityToken", None)
 
             if id_token is None:
-                #raise auth error if no id token was provided
+                # raise auth error if no id token was provided
                 raise auth_error
 
             # get token data
@@ -42,7 +43,7 @@ def permission_required(*permissions: str, check_db: bool = False):
             for perm in permissions:
                 if not user_info.get("permissions", {}).get(perm, False):
                     raise auth_error
-                
+
             # do the db lookup if requested
             if check_db:
                 id_token_id = jwt.get_unverified_header(id_token).get("kid", None)
@@ -68,3 +69,28 @@ def permission_required(*permissions: str, check_db: bool = False):
         return decorated_function
 
     return decorator(decorator)
+
+
+def request_contains_valid_json(wrapped):
+    def decorator(f):
+        @wraps(f)
+        async def decorated_req(request: Request, *args, **kwargs):
+            try:
+                request_content = request.json
+                logger.info(f"############ {isinstance(request_content, dict)}")
+                if not isinstance(request_content, dict):
+                    raise BadRequest
+            except BadRequest:
+                raise BadRequest(
+                    {
+                        "msg": i18n.t("errors.request_invalid"),
+                        "msg_key": "errors.errors.request_invalid",
+                    }
+                )
+
+            response = await f(request, *args, **kwargs)
+            return response
+
+        return decorated_req
+
+    return decorator(wrapped)

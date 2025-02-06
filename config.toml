@@ -3,6 +3,10 @@ debug = true
 port = 9999
 listening_ip = "127.0.0.1"
 
+[Files]
+image_path = "./images"
+supported_image_types = ["jpeg", "png", "gif", "webp"]
+
 [JWT]
 issuer = "kanjiku_backend"
 algorithm = "HS256"

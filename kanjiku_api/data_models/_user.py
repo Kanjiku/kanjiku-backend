@@ -71,7 +71,9 @@ class User(Model):
         forward_key="username",
         backward_key="name",
     )
-    avatar = fields.ForeignKeyField(model_name="data_models.Image", null=True)
+    avatar = fields.ForeignKeyField(
+        model_name="data_models.Image", null=True, on_delete=fields.OnDelete.SET_NULL
+    )
 
     reset_tokens: fields.ReverseRelation["ResetToken"]
     identity_tokens: fields.ReverseRelation["IdentityToken"]
@@ -90,7 +92,7 @@ class User(Model):
     def member_since(self):
         return self.created_at.strftime("%d/%m/%Y")
 
-    async def serialize(self, include_expensive:bool=False, *fields) -> dict:
+    async def serialize(self, include_expensive: bool = False, *fields) -> dict:
         birthday = self.birthday
         if birthday is not None:
             birthday = birthday.strftime("%d/%m/%Y")
@@ -111,11 +113,14 @@ class User(Model):
         }
 
         if include_expensive:
-            raw_dict["read_chapters"] = await self.read_announcements.all().values_list("id", flat=True)
-            raw_dict["read_announcements"] = await self.read_announcements.all().values_list("id", flat=True)
-            raw_dict["groups"] = await self.groups.all().values_list("name",flat=True)
+            raw_dict["read_chapters"] = await self.read_announcements.all().values_list(
+                "id", flat=True
+            )
+            raw_dict["read_announcements"] = (
+                await self.read_announcements.all().values_list("id", flat=True)
+            )
+            raw_dict["groups"] = await self.groups.all().values_list("name", flat=True)
 
-        
         return_dict = {}
         raw_dict_keys = raw_dict.keys()
         if len(fields) == 0:

@@ -4,8 +4,8 @@ from tortoise.models import Model
 
 class Image(Model):
     uuid:UUID = fields.UUIDField(primary_key=True)
-    restrcited = fields.BooleanField(default=False)
-    filepath = fields.TextField()
-    user_relations: fields.OneToOneRelation["User"]
-    manga_relations: fields.OneToOneRelation["Manga"]
-    blog_relations: fields.OneToOneRelation["BlogEntry"]
+    filename = fields.TextField()
+    restricted = fields.BooleanField(default=False)
+    user_relation: fields.OneToOneRelation["User"]
+    manga_relation: fields.OneToOneRelation["Manga"]
+    blog_relation: fields.OneToOneRelation["BlogEntry"]

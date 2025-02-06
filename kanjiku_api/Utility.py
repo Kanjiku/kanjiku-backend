@@ -1,7 +1,12 @@
+import os
 import jwt
 import datetime
+import aiofiles
+import aiofiles.os
+import logging
 
 from uuid import UUID
+from sanic.response import file_stream
 from typing import Optional
 from dataclasses import dataclass
 from jwt.exceptions import InvalidTokenError
@@ -9,6 +14,8 @@ from jwt.exceptions import InvalidTokenError
 from kanjiku_api.Enums import SignMethod
 from kanjiku_api.data_models import IdentityToken, RefreshToken, User, Group
 
+
+logger = logging.getLogger("frick")
 
 @dataclass
 class JWTHelper:
@@ -224,3 +231,23 @@ class JWTHelper:
         )
 
         return updated_id_token, updated_refresh_token
+
+
+@dataclass
+class ImageHandler:
+    image_path:str
+    supported_image_types: list[str]
+
+    def __post_init__(self):
+        os.makedirs(self.image_path, exist_ok=True)
+
+    async def create_file(self, file:bytes, filename:str):
+        logger.debug(f"{self.image_path}/{filename}")
+        async with aiofiles.open(f"{self.image_path}/{filename}", mode='wb') as f:
+            await f.write(file)
+
+    async def remove_file(self, filename:str):
+        await aiofiles.os.remove(f"{self.image_path}/{filename}")
+    
+    async def get_file(self, filename:str):
+        return await file_stream(f"{self.image_path}/{filename}")

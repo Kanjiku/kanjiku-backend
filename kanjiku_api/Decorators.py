@@ -71,59 +71,58 @@ def permission_required(*permissions: str, check_db: bool = False):
     return decorator(decorator)
 
 
-def request_contains_valid_json():
-    def decorator(f):
-        @wraps(f)
-        async def decorated_req(request: Request, *args, **kwargs):
-            try:
-                request_content = request.json
-                if not isinstance(request_content, dict):
-                    raise BadRequest
-            except BadRequest:
-                raise BadRequest(
-                    {
-                        "msg": i18n.t("errors.request_invalid"),
-                        "msg_key": "errors.errors.request_invalid",
-                    }
-                )
+def request_contains_valid_json(wrapped):
+    @wraps(wrapped)
+    async def decorated_req(request: Request, *args, **kwargs):
+        try:
+            request_content = request.json
+            if not isinstance(request_content, dict):
+                raise BadRequest
+        except BadRequest:
+            raise BadRequest(
+                {
+                    "msg": i18n.t("errors.request_invalid"),
+                    "msg_key": "errors.errors.request_invalid",
+                }
+            )
 
-            response = await f(request, *args, **kwargs)
-            return response
+        response = await wrapped(request, *args, **kwargs)
+        return response
 
-        return decorated_req
-
-    return decorator
+    return decorated_req
 
 
-def get_id_token():
-    def decorator(f):
-        wraps(f)
-        async def id_token_decorator(request: Request, *args, **kwargs):
-            if request.ctx.id_token is None:
-                raise SessionError(
-                    {
-                        "msg": i18n.t("errors.no_session"),
-                        "msg_key": "errors.no_session",
-                    },
-                    status_code=400,
-                )
+def get_id_token(wrapped):
+    wraps(wrapped)
 
-            jwt_helper: JWTHelper = request.app.ctx.jwt
+    async def id_token_decorator(request: Request, *args, **kwargs):
+        if request.ctx.id_token is None:
+            raise SessionError(
+                {
+                    "msg": i18n.t("errors.no_session"),
+                    "msg_key": "errors.no_session",
+                },
+                status_code=400,
+            )
 
-            _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
+        jwt_helper: JWTHelper = request.app.ctx.jwt
 
-            id_token = await IdentityToken.get_or_none(uuid=id_token_id)
+        _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
 
-            if id_token is None:
-                raise SessionError(
-                    {
-                        "msg": i18n.t("errors.no_session"),
-                        "msg_key": "errors.no_session",
-                    },
-                    status_code=400,
-                )
+        id_token = await IdentityToken.get_or_none(uuid=id_token_id)
 
-            response = await f(request, id_token = id_token, *args, **kwargs)
-            return response
-        return id_token_decorator
-    return decorator
+        if id_token is None:
+            raise SessionError(
+                {
+                    "msg": i18n.t("errors.no_session"),
+                    "msg_key": "errors.no_session",
+                },
+                status_code=400,
+            )
+        
+        request.ctx.id_token = id_token
+
+        response = await wrapped(request, *args, **kwargs)
+        return response
+
+    return id_token_decorator

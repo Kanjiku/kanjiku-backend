@@ -9,7 +9,7 @@ from sanic.response import json as json_resp
 from kanjiku_api.Utility import JWTHelper
 from kanjiku_api.Exceptions import SessionError
 from kanjiku_api.data_models import User, IdentityToken
-from kanjiku_api.Decorators import request_contains_valid_json
+from kanjiku_api.Decorators import request_contains_valid_json, get_id_token
 from . import user_bp
 
 
@@ -47,24 +47,10 @@ async def me(request: Request):
     return json_resp(resp_data)
 
 
+@get_id_token()
+@request_contains_valid_json()
 @user_bp.route("/me", ["PATCH"])
-@request_contains_valid_json
-async def update_me(request: Request):
-
-    jwt_helper: JWTHelper = request.app.ctx.jwt
-
-    _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
-
-    id_token = await IdentityToken.get_or_none(uuid=id_token_id)
-
-    if id_token is None:
-        raise SessionError(
-            {
-                "msg": i18n.t("errors.no_session"),
-                "msg_key": "errors.no_session",
-            },
-            status_code=400,
-        )
+async def update_me(request: Request, id_token:IdentityToken):
 
     user: User = await id_token.user
     request_data = request.json
@@ -130,33 +116,9 @@ async def update_me(request: Request):
     return resp
 
 
+@get_id_token()
 @user_bp.route("/me", ["DELETE"])
-async def delete_me(request: Request):
-
-    if request.ctx.id_token is None:
-        raise SessionError(
-            {
-                "msg": i18n.t("errors.no_session"),
-                "msg_key": "errors.no_session",
-            },
-            status_code=400,
-        )
-
-    jwt_helper: JWTHelper = request.app.ctx.jwt
-
-    _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
-
-    id_token = await IdentityToken.get_or_none(uuid=id_token_id)
-
-    if id_token is None:
-        raise SessionError(
-            {
-                "msg": i18n.t("errors.no_session"),
-                "msg_key": "errors.no_session",
-            },
-            status_code=400,
-        )
-
+async def delete_me(request: Request, id_token:IdentityToken):
     user: User = await id_token.user
 
     await user.delete()
@@ -167,3 +129,9 @@ async def delete_me(request: Request):
     resp.delete_cookie("IdentityToken")
     resp.delete_cookie("RefreshToken")
     return resp
+
+
+@request_contains_valid_json()
+@user_bp.route("/me/avatar", ["POST"])
+async def upload_avatar(request: Request):
+    pass

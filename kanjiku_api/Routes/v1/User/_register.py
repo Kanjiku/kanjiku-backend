@@ -12,8 +12,8 @@ from kanjiku_api.Decorators import request_contains_valid_json
 from . import user_bp
 
 
+@request_contains_valid_json()
 @user_bp.route("/register", ["POST"])
-@request_contains_valid_json
 async def register(request: Request):
 
     request_body = request.json

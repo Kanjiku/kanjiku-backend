@@ -12,8 +12,8 @@ from kanjiku_api.Exceptions import LoginError
 from . import session_bp
 
 
-@request_contains_valid_json()
 @session_bp.route("/login", ["POST"])
+@request_contains_valid_json
 async def login(request: Request):
     request_data = request.json
     username = request_data.get("username", None)

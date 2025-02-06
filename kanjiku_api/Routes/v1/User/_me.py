@@ -2,43 +2,24 @@ import i18n
 import bcrypt
 import datetime
 
+from uuid import uuid4
 from sanic import Request
+from typing import Optional
 from sanic.exceptions import BadRequest
 from sanic.response import json as json_resp
 
-from kanjiku_api.Utility import JWTHelper
+from kanjiku_api.Utility import JWTHelper, ImageHandler
 from kanjiku_api.Exceptions import SessionError
-from kanjiku_api.data_models import User, IdentityToken
+from kanjiku_api.data_models import User, IdentityToken, Image
 from kanjiku_api.Decorators import request_contains_valid_json, get_id_token
 from . import user_bp
 
 
-@user_bp.route("/me", ["GET"])
+@user_bp.route("/me", ["GET"], name="me")
+@get_id_token
 async def me(request: Request):
 
-    if request.ctx.id_token is None:
-        raise SessionError(
-            {
-                "msg": i18n.t("errors.no_session"),
-                "msg_key": "errors.no_session",
-            },
-            status_code=400,
-        )
-
-    jwt_helper: JWTHelper = request.app.ctx.jwt
-
-    _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
-
-    id_token = await IdentityToken.get_or_none(uuid=id_token_id)
-
-    if id_token is None:
-        raise SessionError(
-            {
-                "msg": i18n.t("errors.no_session"),
-                "msg_key": "errors.no_session",
-            },
-            status_code=400,
-        )
+    id_token: IdentityToken = request.ctx.id_token
 
     user: User = await id_token.user
 
@@ -47,11 +28,11 @@ async def me(request: Request):
     return json_resp(resp_data)
 
 
-@get_id_token()
-@request_contains_valid_json()
-@user_bp.route("/me", ["PATCH"])
-async def update_me(request: Request, id_token:IdentityToken):
-
+@user_bp.route("/me", ["PATCH"], name="update_me")
+@request_contains_valid_json
+@get_id_token
+async def update_me(request: Request):
+    id_token: IdentityToken = request.ctx.id_token
     user: User = await id_token.user
     request_data = request.json
 
@@ -116,10 +97,19 @@ async def update_me(request: Request, id_token:IdentityToken):
     return resp
 
 
-@get_id_token()
-@user_bp.route("/me", ["DELETE"])
-async def delete_me(request: Request, id_token:IdentityToken):
+@user_bp.route("/me", ["DELETE"], name="delete_me")
+@get_id_token
+async def delete_me(
+    request: Request,
+):
+    id_token: IdentityToken = request.ctx.id_token
     user: User = await id_token.user
+
+    user_avatar: Optional[Image] = await user.avatar
+    if user_avatar is not None:
+        image_handler: ImageHandler = request.app.ctx.image_handler
+        await image_handler.remove_file(str(user_avatar.uuid))
+        await user_avatar.delete()
 
     await user.delete()
     resp = json_resp(
@@ -131,7 +121,39 @@ async def delete_me(request: Request, id_token:IdentityToken):
     return resp
 
 
-@request_contains_valid_json()
-@user_bp.route("/me/avatar", ["POST"])
+@user_bp.route("/me/avatar", ["POST"], name="upload_avatar")
+@get_id_token
 async def upload_avatar(request: Request):
-    pass
+    id_token: IdentityToken = request.ctx.id_token
+    if request.files is not None and len(request.files) != 1:
+        raise BadRequest(
+            {"msg": i18n.t("errors.to_many_files"), "msg_key": "errors.to_many_files"}
+        )
+    image_handler: ImageHandler = request.app.ctx.image_handler
+    filename, file = list(request.files.items())[0]
+    file = file[0].body
+
+    img_uuid = uuid4()
+    await image_handler.create_file(file, str(img_uuid))
+
+    # check if user has an old avatar
+    user: User = await id_token.user
+
+    user_avatar: Optional[Image] = await user.avatar
+    removed_old_avatar = False
+    if user_avatar is not None:
+        await image_handler.remove_file(str(user_avatar.uuid))
+        removed_old_avatar = True
+        await user_avatar.delete()
+
+    img = await Image.create(uuid=img_uuid, filename=filename)
+    user.avatar = img
+    await user.save()
+
+    return json_resp(
+        {
+            "msg": i18n.t("messages.avatar_upload"),
+            "msg_key": "messages.avatar_upload",
+            "removed_old_avatar": removed_old_avatar,
+        }
+    )

@@ -16,6 +16,6 @@ async def add_token_info(request: Request):
         except InvalidTokenError:
             pass
 
-    request.ctx.id_token = id_token
-    request.ctx.refresh_token = refresh_token
+    request.ctx.id_token_str = id_token
+    request.ctx.refresh_token_str = refresh_token
     request.ctx.user_info = user_info

@@ -96,7 +96,7 @@ def get_id_token(wrapped):
     wraps(wrapped)
 
     async def id_token_decorator(request: Request, *args, **kwargs):
-        if request.ctx.id_token is None:
+        if request.ctx.id_token_str is None:
             raise SessionError(
                 {
                     "msg": i18n.t("errors.no_session"),
@@ -107,7 +107,7 @@ def get_id_token(wrapped):
 
         jwt_helper: JWTHelper = request.app.ctx.jwt
 
-        _, id_token_id = jwt_helper.token_data(request.ctx.id_token)
+        _, id_token_id = jwt_helper.token_data(request.ctx.id_token_str)
 
         id_token = await IdentityToken.get_or_none(uuid=id_token_id)
 

@@ -12,10 +12,10 @@ from kanjiku_api.Decorators import get_id_token
 from . import session_bp
 
 
-@get_id_token()
-@session_bp.route("/logout", ["POST"])
-async def logout(request: Request, id_token: IdentityToken):
-
+@session_bp.route("/logout", ["POST"], name="logout")
+@get_id_token
+async def logout(request: Request):
+    id_token: IdentityToken = request.ctx.id_token
     request_data = None
     try:
         request_data = request.json

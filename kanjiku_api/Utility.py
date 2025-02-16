@@ -18,6 +18,7 @@ from kanjiku_api.data_models import IdentityToken, RefreshToken, User, Group
 
 logger = logging.getLogger("kanjiku_api.ImageHandler")
 
+
 @dataclass
 class JWTHelper:
     issuer: str
@@ -132,7 +133,7 @@ class JWTHelper:
 
         if id_token_id is None:
             raise InvalidTokenError()
-        
+
         try:
             id_token_id = UUID(id_token_id)
         except ValueError:
@@ -236,28 +237,27 @@ class JWTHelper:
 
 @dataclass
 class ImageHandler:
-    image_path:str
+    image_path: str
     supported_image_types: list[str]
 
     def __post_init__(self):
         os.makedirs(self.image_path, exist_ok=True)
 
-    async def create_file(self, file:bytes, filename:str):
+    async def create_file(self, file: bytes, filename: str):
         logger.debug(f"{self.image_path}/{filename}")
-        async with aiofiles.open(f"{self.image_path}/{filename}", mode='wb') as f:
+        async with aiofiles.open(f"{self.image_path}/{filename}", mode="wb") as f:
             await f.write(file)
 
-    async def remove_file(self, filename:str):
-        try:
+    async def remove_file(self, filename: str):
+        if self.exists(f"{self.image_path}/{filename}"):
             await aiofiles.os.remove(f"{self.image_path}/{filename}")
-        except FileNotFoundError:
-            pass
-        try:
+        if self.exists(f"{self.image_path}/{filename}_thumbnail"):
             await aiofiles.os.remove(f"{self.image_path}/{filename}_thumbnail")
-        except FileNotFoundError:
-            pass
-    
-    def get_file(self, filepath:str, filename:Optional[str] = None):
+
+    def exists(self, filename: str) -> bool:
+        return os.path.isfile(f"{self.image_path}/{filename}")
+
+    def get_file(self, filepath: str, filename: Optional[str] = None):
         return file_stream(f"{self.image_path}/{filepath}", filename=filename)
 
     def create_thumbnail(self, filename):

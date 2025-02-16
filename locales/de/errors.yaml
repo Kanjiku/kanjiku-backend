@@ -21,3 +21,4 @@ permission_error: Berechtigungsfehler!
 request_invalid: Die Anfrage ist ungültig!
 no_data_to_update: Keine zu aktualisierenden Daten übergeben!
 update_wrong_password: Aktualissierung fehlgeschlagen -> Passwort falsch!
+image_does_not_exist: Das angefragte Bild existiert nicht!

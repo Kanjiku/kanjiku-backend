@@ -13,12 +13,17 @@ class UserDoesNotExist(SanicException):
     pass
 
 
+class ImageDoesNotExist(SanicException):
+    pass
+
+
 class LoginError(SanicException):
     pass
 
 
 class SessionError(SanicException):
     pass
+
 
 class PermissionError(SanicException):
     pass

@@ -3,3 +3,4 @@ login_success: Erfolgreich als {username} angemeldet.
 session_refreshed: Sitzung erfolgreich erneuert.
 logout_success: Erfolgreich abgemeldet.
 update_successfull: Daten erfolgreich aktualisiert. Bitte erneut einloggen.
+avatar_uploaded: Avatr hochgeladen.

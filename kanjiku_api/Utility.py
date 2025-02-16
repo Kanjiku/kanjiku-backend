@@ -249,5 +249,5 @@ class ImageHandler:
     async def remove_file(self, filename:str):
         await aiofiles.os.remove(f"{self.image_path}/{filename}")
     
-    async def get_file(self, filename:str):
-        return await file_stream(f"{self.image_path}/{filename}")
+    def get_file(self, filepath:str, filename:Optional[str] = None):
+        return file_stream(f"{self.image_path}/{filepath}", filename=filename)

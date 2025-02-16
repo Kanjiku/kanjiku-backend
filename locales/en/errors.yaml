@@ -21,3 +21,4 @@ permission_error: Permission error!
 request_invalid: The request is invalid!
 no_data_to_update: No data to update provided!
 update_wrong_password: Update failed -> wrong Password!
+image_does_not_exist: The requested image does not exist!

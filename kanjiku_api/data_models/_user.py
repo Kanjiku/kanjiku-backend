@@ -99,13 +99,14 @@ class User(Model):
 
         avatar = await self.avatar
         if avatar is not None:
-            return str(avatar.uuid)
+            avatar = str(avatar.uuid)
 
         raw_dict = {
             "id": str(self.uuid),
             "username": self.username,
             "email": self.email,
             "birthday": birthday,
+            "avatar": avatar,
             "activated": self.activated,
             "member_since": self.member_since,
             "created_at": self.created_at.isoformat(),

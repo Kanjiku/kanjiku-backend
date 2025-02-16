@@ -152,8 +152,8 @@ async def upload_avatar(request: Request):
 
     return json_resp(
         {
-            "msg": i18n.t("messages.avatar_upload"),
-            "msg_key": "messages.avatar_upload",
+            "msg": i18n.t("messages.avatar_uploaded"),
+            "msg_key": "messages.avatar_uploaded",
             "removed_old_avatar": removed_old_avatar,
         }
     )

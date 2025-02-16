@@ -15,6 +15,7 @@ from kanjiku_api.Exceptions import (
     UserDoesNotExist,
     LoginError,
     ParameterError,
+    ImageDoesNotExist,
 )
 from kanjiku_api.Utility import JWTHelper, ImageHandler
 from kanjiku_api.SignalHandler import create_thumbnail
@@ -65,9 +66,23 @@ def attach_endpoints(app: Sanic):
     app.blueprint(v1_bp)
     app.blueprint(generic_bp)
 
+    app.config.CORS_ORIGINS = "*"
+
+
+def attach_error_handlers(app: Sanic):
     @app.exception(RegistrationFail, UserDoesNotExist, LoginError, ParameterError)
     async def handle_registration_fail(request: Request, exc: RegistrationFail):
         return json(exc.message, status=exc.status_code)
+
+    @app.exception(ImageDoesNotExist)
+    async def handle_image_not_found(request: Request, exc: ImageDoesNotExist):
+        return json(
+            {
+                "msg": i18n.t("errors.image_does_not_exist"),
+                "msg_key": "errors.image_does_not_exist",
+            },
+            status=404,
+        )
 
     @app.exception(InvalidTokenError)
     async def handle_decode_error(request: Request, exc: InvalidTokenError):
@@ -79,8 +94,6 @@ def attach_endpoints(app: Sanic):
             400,
         )
 
-    app.config.CORS_ORIGINS = "*"
-
 
 def create_app(config: dict) -> Sanic:
     app_name = config.get("app_name", "Kanjiku-API")
@@ -88,6 +101,7 @@ def create_app(config: dict) -> Sanic:
     attach_endpoints(app)
     attach_tortoise(app)
     attach_signal_handlers(app)
+    attach_error_handlers(app)
     app.ctx.CFG = config
 
     app.ctx.image_handler = ImageHandler(**config["Files"])

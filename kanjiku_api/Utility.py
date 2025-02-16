@@ -5,6 +5,7 @@ import aiofiles
 import aiofiles.os
 import logging
 
+from PIL import Image
 from uuid import UUID
 from sanic.response import file_stream
 from typing import Optional
@@ -15,7 +16,7 @@ from kanjiku_api.Enums import SignMethod
 from kanjiku_api.data_models import IdentityToken, RefreshToken, User, Group
 
 
-logger = logging.getLogger("frick")
+logger = logging.getLogger("kanjiku_api.ImageHandler")
 
 @dataclass
 class JWTHelper:
@@ -247,7 +248,19 @@ class ImageHandler:
             await f.write(file)
 
     async def remove_file(self, filename:str):
-        await aiofiles.os.remove(f"{self.image_path}/{filename}")
+        try:
+            await aiofiles.os.remove(f"{self.image_path}/{filename}")
+        except FileNotFoundError:
+            pass
+        try:
+            await aiofiles.os.remove(f"{self.image_path}/{filename}_thumbnail")
+        except FileNotFoundError:
+            pass
     
     def get_file(self, filepath:str, filename:Optional[str] = None):
         return file_stream(f"{self.image_path}/{filepath}", filename=filename)
+
+    def create_thumbnail(self, filename):
+        img = Image.open(f"{self.image_path}/{filename}")
+        img.thumbnail((250, 250))
+        img.save(f"{self.image_path}/{filename}_thumbnail", "webp")

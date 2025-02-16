@@ -12,6 +12,7 @@ tortoise-orm = {extras = ["asyncmy"], version = "*"}
 bcrypt = "*"
 pyjwt = "*"
 aiofiles = "*"
+pillow = "*"
 
 [dev-packages]
 black = "*"

@@ -150,6 +150,11 @@ async def upload_avatar(request: Request):
     user.avatar = img
     await user.save()
 
+    await request.app.dispatch(
+        "user.avatar.uploaded",
+        context={"img_uid": img_uuid, "img_handler": image_handler},
+    )
+
     return json_resp(
         {
             "msg": i18n.t("messages.avatar_uploaded"),

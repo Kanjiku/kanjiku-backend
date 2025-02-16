@@ -6,5 +6,6 @@ from kanjiku_api import Utility
 from kanjiku_api import Decorators
 from kanjiku_api import data_models
 from kanjiku_api import Exceptions
+from kanjiku_api import SignalHandler
 
 __all__ = ["create_app"]

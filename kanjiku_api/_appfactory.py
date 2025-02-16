@@ -1,18 +1,23 @@
 import i18n
 
-from sanic import Sanic, text, Request
 from sanic_ext import Extend
-from sanic.response import json
-
-from tortoise import Tortoise, connections
 from tortoise.log import logger
+from sanic.response import json
+from jwt import InvalidTokenError
+from sanic import Sanic, text, Request
+from tortoise import Tortoise, connections
+
 
 from kanjiku_api.Routes.v1 import v1_bp
 from kanjiku_api.Routes import generic_bp
-from kanjiku_api.Exceptions import RegistrationFail, UserDoesNotExist, LoginError, ParameterError
-from kanjiku_api.Utility import JWTHelper
-from kanjiku_api.Enums import SignMethod
-from jwt.exceptions import InvalidTokenError
+from kanjiku_api.Exceptions import (
+    RegistrationFail,
+    UserDoesNotExist,
+    LoginError,
+    ParameterError,
+)
+from kanjiku_api.Utility import JWTHelper, ImageHandler
+from kanjiku_api.SignalHandler import create_thumbnail
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -51,6 +56,10 @@ def attach_tortoise(app: Sanic):
         await Tortoise.generate_schemas()
 
 
+def attach_signal_handlers(app: Sanic):
+    app.add_signal(create_thumbnail, "user.avatar.uploaded")
+
+
 def attach_endpoints(app: Sanic):
 
     app.blueprint(v1_bp)
@@ -78,8 +87,10 @@ def create_app(config: dict) -> Sanic:
     app = Sanic(app_name)
     attach_endpoints(app)
     attach_tortoise(app)
+    attach_signal_handlers(app)
     app.ctx.CFG = config
 
+    app.ctx.image_handler = ImageHandler(**config["Files"])
     app.ctx.jwt = JWTHelper(**config["JWT"])
 
     Extend(app)

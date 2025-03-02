@@ -8,10 +8,9 @@ from typing import Optional
 from sanic.exceptions import BadRequest
 from sanic.response import json as json_resp
 
-from kanjiku_api.Utility import JWTHelper, ImageHandler
-from kanjiku_api.Exceptions import SessionError
+from kanjiku_api.Utility import ImageHandler
 from kanjiku_api.data_models import User, IdentityToken, Image
-from kanjiku_api.Decorators import request_contains_valid_json, get_id_token
+from kanjiku_api.Utility.Decorators import request_contains_valid_json, get_id_token
 from . import user_bp
 
 

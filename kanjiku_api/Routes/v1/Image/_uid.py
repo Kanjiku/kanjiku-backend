@@ -1,6 +1,6 @@
 import i18n
 
-from sanic import Sanic, Request
+from sanic import Request
 from uuid import UUID
 
 from kanjiku_api.data_models import Image

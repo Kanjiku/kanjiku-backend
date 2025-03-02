@@ -1,6 +1,6 @@
 from sanic import Request
 from jwt.exceptions import InvalidTokenError
-from kanjiku_api.Utility import JWTHelper
+from . import JWTHelper
 
 
 async def add_token_info(request: Request):

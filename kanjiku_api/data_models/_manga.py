@@ -3,7 +3,7 @@ from tortoise.models import Model
 
 
 class Manga(Model):
-    id = fields.BigIntField(pk=True)
+    id = fields.BigIntField(primary_key=True)
     name = fields.CharField(max_length=255, unique=True)
     slug = fields.CharField(max_length=255, unique=True)
     description = fields.TextField(null=True)

@@ -4,7 +4,7 @@ from tortoise.models import Model
 
 
 class Chapter(Model):
-    id = fields.BigIntField(pk=True)
+    id = fields.BigIntField(primary_key=True)
     number = fields.TextField()
     volume = fields.TextField(null=True)
     name = fields.TextField()

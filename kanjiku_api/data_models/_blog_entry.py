@@ -4,7 +4,7 @@ from tortoise.models import Model
 
 
 class BlogEntry(Model):
-    id = fields.BigIntField(pk=True)
+    id = fields.BigIntField(primary_key=True)
     created = fields.DatetimeField(auto_now_add=True)
     modified = fields.DatetimeField(auto_now=True)
     text = fields.TextField()

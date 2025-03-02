@@ -20,21 +20,20 @@ class User(Model):
         activated (bool): User verified his email Address.
     """
 
-    uuid: UUID = fields.UUIDField(pk=True)
+    uuid: UUID = fields.UUIDField(primary_key=True)
     username: str = fields.CharField(
         max_length=30,
         unique=True,
         description="Username",
         validators=[
-            MinLengthValidator(5),
             RegexValidator(
-                r"[a-z0-9]+[a-z \._-]+[a-z0-9]",
+                r"[a-z0-9-_]{4,30}",
                 re.I,
             ),
         ],
     )
     password_hash: bytes = fields.BinaryField(
-        description="Hash of the password", null=True
+        description="Hash of the password"
     )
     email: str = fields.CharField(
         max_length=320,
@@ -66,10 +65,7 @@ class User(Model):
     )
     groups = fields.ManyToManyField(
         model_name="data_models.Group",
-        through="usergroup",
         related_name="users",
-        forward_key="username",
-        backward_key="name",
     )
     avatar = fields.ForeignKeyField(
         model_name="data_models.Image", null=True, on_delete=fields.OnDelete.SET_NULL

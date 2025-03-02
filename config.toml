@@ -13,3 +13,24 @@ supported_image_types = ["jpeg", "png", "gif", "webp"]
 issuer = "kanjiku_backend"
 algorithm = "HS256"
 secret = "supersecretjwtcode"
+
+
+[[users]]
+username = "admin2"
+password = "admin"
+email = "test@example.com"
+groups = ["admin"]
+
+[[users]]
+username = "test123"
+password = "test123"
+email = "test2@example.com"
+
+[[groups]]
+name = "admin"
+admin = true
+view_hidden = true
+early_access = true
+manage_projects = true
+upload_chapters = true
+moderate_avatars = true

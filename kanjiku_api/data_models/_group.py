@@ -20,7 +20,7 @@ class Group(Model):
         admin (bool): Full administrative access.
     """
 
-    name: str = fields.CharField(unique=True, max_length=50, pk=True)
+    name: str = fields.CharField(unique=True, max_length=50, primary_key=True)
     users: fields.ManyToManyRelation[User]
     early_access: int = fields.IntField(default=0)
     upload_chapters = fields.BooleanField(default=False)

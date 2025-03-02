@@ -34,7 +34,7 @@ def attach_tortoise(app: Sanic, db_url: str = "sqlite://:memory:"):
     async def tortoise_init() -> None:
         await Tortoise.init(
             db_url=db_url,
-            modules={"data_models": ["img_upload_backend.data_models"]},
+            modules={"data_models": ["kanjiku_api.data_models"]},
         )
         logger.info(
             "Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps

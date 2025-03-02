@@ -8,7 +8,7 @@ from sanic.response import json as json_resp
 
 from kanjiku_api.data_models import User
 from kanjiku_api.Exceptions import RegistrationFail
-from kanjiku_api.Decorators import request_contains_valid_json
+from kanjiku_api.Utility.Decorators import request_contains_valid_json
 from . import user_bp
 
 

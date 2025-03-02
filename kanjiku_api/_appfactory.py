@@ -18,7 +18,7 @@ from kanjiku_api.Exceptions import (
     ImageDoesNotExist,
 )
 from kanjiku_api.Utility import JWTHelper, ImageHandler
-from kanjiku_api.SignalHandler import create_thumbnail
+from kanjiku_api.Utility.SignalHandler import create_thumbnail
 
 i18n.load_path.append("./locales")
 i18n.set("locale", "de")
@@ -29,17 +29,17 @@ i18n.set("use_locale_dirs", True)
 i18n.load_everything()
 
 
-def attach_tortoise(app: Sanic):
+def attach_tortoise(app: Sanic, db_url: str = "sqlite://:memory:"):
 
     async def tortoise_init() -> None:
         await Tortoise.init(
-            db_url="sqlite://:memory:",
-            modules={"data_models": ["kanjiku_api.data_models"]},
+            db_url=db_url,
+            modules={"data_models": ["img_upload_backend.data_models"]},
         )
         logger.info(
             "Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps
         )  # pylint: disable=W0212
-        await Tortoise.generate_schemas()
+        await Tortoise.generate_schemas(safe=True)
 
     @app.listener("after_server_stop")
     async def close_orm(app, loop):  # pylint: disable=W0612
@@ -61,12 +61,13 @@ def attach_signal_handlers(app: Sanic):
     app.add_signal(create_thumbnail, "user.avatar.uploaded")
 
 
-def attach_endpoints(app: Sanic):
+def attach_endpoints(app: Sanic, cors_origin: str):
 
     app.blueprint(v1_bp)
     app.blueprint(generic_bp)
 
-    app.config.CORS_ORIGINS = "*"
+    app.config.CORS_ORIGINS = cors_origin
+    app.config.CORS_SUPPORTS_CREDENTIALS = True
 
 
 def attach_error_handlers(app: Sanic):
@@ -96,12 +97,15 @@ def attach_error_handlers(app: Sanic):
 
 
 def create_app(config: dict) -> Sanic:
-    app_name = config.get("app_name", "Kanjiku-API")
+    app_name = config.get("app_name", "ImageUploadBackend")
+    db_url = config.get("db_url", "sqlite://:memory:")
     app = Sanic(app_name)
-    attach_endpoints(app)
-    attach_tortoise(app)
+    attach_endpoints(app, config["cors_origin"])
+    attach_tortoise(app, db_url)
     attach_signal_handlers(app)
     attach_error_handlers(app)
+    app.config.OAS_UI_REDOC = False
+    app.config.OAS_UI_DEFAULT = "swagger"
     app.ctx.CFG = config
 
     app.ctx.image_handler = ImageHandler(**config["Files"])

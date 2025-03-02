@@ -8,7 +8,7 @@ from sanic.response import json as json_resp
 from kanjiku_api.Utility import JWTHelper
 from kanjiku_api.Exceptions import SessionError
 from kanjiku_api.data_models import IdentityToken, User
-from kanjiku_api.Decorators import get_id_token
+from kanjiku_api.Utility.Decorators import get_id_token
 from . import session_bp
 
 

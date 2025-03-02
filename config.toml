@@ -1,7 +1,9 @@
-app_name = "kanjiku_api"
+cors_origin = "https://localhost:5173"
+app_name = "img_upload_backend"
 debug = true
 port = 9999
 listening_ip = "127.0.0.1"
+db_url = "sqlite://test.db"
 
 [Files]
 image_path = "./images"

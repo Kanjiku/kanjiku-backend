@@ -10,7 +10,7 @@ from sanic.worker.loader import AppLoader
 
 from kanjiku_api.Enums import SignMethod
 from kanjiku_api import create_app, cli
-from kanjiku_api.data_models import User
+from kanjiku_api.data_models import User, Group
 
 logger = logging.getLogger("kanjiku_backend")
 
@@ -34,7 +34,8 @@ async def define_users(_app, _loop, user_config: Optional[list[dict]] = None):
         salt = bcrypt.gensalt()
         pw_hash = bcrypt.hashpw(password.encode("utf-8"), salt)
 
-        user = await User.create(username=username, password_hash=pw_hash, admin=admin)
+        user = await User.create(username=username, password_hash=pw_hash)
+            
         await user.save()
 
 
